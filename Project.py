@@ -68,27 +68,3 @@ plt.xlabel('Cancer Incidence Rate')
 plt.ylabel('Cancer Mortality Rate')
 plt.show()
 
-
-
-
-
-################
-# Correlation matrix
-death_values = death[['location_name', 'year','val']].copy()
-death_values.rename(columns={'val': 'death_val'}, inplace=True)
-
-incidence_values = incidence[['location_name', 'year','val']].copy()
-incidence_values.rename(columns={'val': 'incidence_val'}, inplace=True)
-
-merged_additional= pd.merge(death_values, incidence_values, on=['location_name', 'year'])
-
-# Calculate the correlation matrix between death_val and incidence_val
-corr_matrix = merged_additional[['death_val', 'incidence_val']].corr()
-print(corr_matrix)
-
-# Heatmap for visualization
-plt.figure(figsize=(8, 6))
-sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', square=True, cbar_kws={"shrink": .8})
-plt.title('Correlation Matrix: Relationship Between Cancer Incidence and Mortality', fontsize=16)
-plt.show()
-
