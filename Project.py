@@ -95,7 +95,7 @@ Age_count = data['age_name'].value_counts().sort_index()
 print(Age_count)
 
 
-#DISTRIBUTION OF AGE GROUP BY COUNTRY
+#DISTRIBUTION OF AGE GROUP AND GENDER BY COUNTRY
 
 #Convert 'age_name' to categorical and sort to order
 data['age_name'] = pd.Categorical(data['age_name'], categories = sorted(data['age_name'].unique()), ordered = True)
@@ -295,3 +295,74 @@ for country in countries:
     plt.tight_layout()
     plt.show()
 
+
+#AGE GROUP BY GENDER
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['sex_name'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#AGE GROUP BY CANCER CAUSE
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['cause_abbreviation'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#AGE GROUP BY MEASURE NAME
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['measure_name'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#AGE GROUP BY COUNTRY
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['location_name'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#AGE GROUP BY CAUSES OF DEATH
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#GENDER BY COUNTRY
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['location_name'], data['sex_name'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#COUNTRY BY CAUSES OF DEATH
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['location_name'])
+
+# Display the result
+print(age_sex_crosstab)
+
+
+#GENDER BY CAUSES OF DEATH
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
+
+# Display the result
+print(age_sex_crosstab)
