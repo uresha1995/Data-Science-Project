@@ -301,7 +301,7 @@ for country in countries:
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['age_name'], data['sex_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -310,7 +310,7 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['age_name'], data['cause_abbreviation'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -319,7 +319,7 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['age_name'], data['measure_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -328,7 +328,7 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['age_name'], data['location_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -337,7 +337,7 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -346,7 +346,7 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['location_name'], data['sex_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -355,7 +355,7 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['location_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
 
 
@@ -364,5 +364,44 @@ print(age_sex_crosstab)
 #Create a cross-tabulation of age by sex
 age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
 
-# Display the result
+#Print the table
 print(age_sex_crosstab)
+
+
+#TREND BY YEAR AND MEASURE TYPE
+
+plt.figure(figsize = (14, 8))
+sns.lineplot(x = 'year', y = 'val', hue = 'measure_name', data = data, ci = 95, marker='o')
+plt.title('Trends in Cancer Incidence and Mortality Over Time')
+plt.xlabel('Year')
+plt.ylabel('Count')
+plt.xticks(rotation = 45)
+plt.legend(title='Measure Type')
+plt.show()
+
+
+#CORRELATION OF CAUSE OF CANCER BY AGE 
+
+#Row-wise normalization for first half
+age_gender_cancer_first_half_norm = age_gender_cancer_first_half.div(age_gender_cancer_first_half.sum(axis = 1), axis = 0)
+
+#Row-wise normalization for second half
+age_gender_cancer_second_half_norm = age_gender_cancer_second_half.div(age_gender_cancer_second_half.sum(axis = 1), axis = 0)
+
+#Plot for first half of cancer types
+plt.figure(figsize = (16, 10))
+sns.heatmap(age_gender_cancer_first_half_norm, cmap = 'coolwarm', annot = True, fmt = ".2f")
+plt.title('Correlation of Cancer Cause by Age Group')
+plt.xlabel('Cancer Cause')
+plt.ylabel('Age Group')
+plt.xticks(rotation = 45)
+plt.show()
+
+#Plot for second half of cancer types
+plt.figure(figsize = (16, 10))
+sns.heatmap(age_gender_cancer_second_half_norm, cmap = 'coolwarm', annot = True, fmt = ".2f")
+plt.title('Distribution of Second Half of Cancer Types by Age Group (Normalized)')
+plt.xlabel('Cancer Cause')
+plt.ylabel('Age Group')
+plt.xticks(rotation = 45)
+plt.show()
