@@ -341,6 +341,15 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
 print(age_sex_crosstab)
 
 
+#GENDER BY CAUSES OF DEATH
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
 #GENDER BY COUNTRY
 
 #Create a cross-tabulation of age by sex
@@ -379,29 +388,72 @@ plt.xticks(rotation = 45)
 plt.legend(title='Measure Type')
 plt.show()
 
+#MOTALITY RATE COMPARISON OVER TIME
 
-#CORRELATION OF CAUSE OF CANCER BY AGE 
+#Dictionary to map each country to a specific marker
+markers = {
+    'Mexico': 'o',            
+    'France': 's',            
+    'Japan': 'D',              
+    'Poland': '^',             
+    'South Africa': 'x',       
+    'Nigeria': 'p',            
+    'Brazil': 'h',             
+    'India': '+',              
+    'United Kingdom': '>',      
+    'China': '*',              
+    'United States of America': '.',  
+    'Australia': ',',         
+}
 
-#Row-wise normalization for first half
-age_gender_cancer_first_half_norm = age_gender_cancer_first_half.div(age_gender_cancer_first_half.sum(axis = 1), axis = 0)
+plt.figure(figsize=(25, 20))
 
-#Row-wise normalization for second half
-age_gender_cancer_second_half_norm = age_gender_cancer_second_half.div(age_gender_cancer_second_half.sum(axis = 1), axis = 0)
+#Line plot with specific marker
+for country, marker in markers.items():
+    #Filter data for the country
+    country_data = data[(data['location_name'] == country) & (data['measure_name'] == 'Deaths')]
+    
+    #Plot the line with confidence interval shading
+    sns.lineplot(
+        x='year', 
+        y='val', 
+        data=country_data, 
+        marker=marker, 
+        label=country, 
+        dashes=False,
+        alpha=0.5          
+    )
 
-#Plot for first half of cancer types
-plt.figure(figsize = (16, 10))
-sns.heatmap(age_gender_cancer_first_half_norm, cmap = 'coolwarm', annot = True, fmt = ".2f")
-plt.title('Correlation of Cancer Cause by Age Group')
-plt.xlabel('Cancer Cause')
-plt.ylabel('Age Group')
-plt.xticks(rotation = 45)
+plt.title('Yearly Mortality Rate Comparison Across Countries', fontsize=24)
+plt.xlabel('Year', fontsize=20)
+plt.ylabel('Mortality Rate', fontsize=20)
+plt.ylim(0, 1000)
+
+
+plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=20, title_fontsize=18)
 plt.show()
 
-#Plot for second half of cancer types
-plt.figure(figsize = (16, 10))
-sns.heatmap(age_gender_cancer_second_half_norm, cmap = 'coolwarm', annot = True, fmt = ".2f")
-plt.title('Distribution of Second Half of Cancer Types by Age Group (Normalized)')
-plt.xlabel('Cancer Cause')
-plt.ylabel('Age Group')
-plt.xticks(rotation = 45)
+
+#YEARLY TREND FOR EACH CANCER CAUSE
+
+plt.figure(figsize=(20, 16))
+sns.lineplot(data=data, x='year', y='val', hue='cause_name', ci=None)
+plt.title('Yearly Trends in Cancer Types')
+plt.xlabel('Year')
+plt.ylabel('Count')
+plt.ylim(-500, 40000)
+plt.legend(title='Cancer Type', bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.xticks(rotation=45)
+plt.show()
+
+
+#EXPLORING DIFFERENCES BY AGE AND YEAR
+
+plt.figure(figsize=(14, 8))
+sns.lineplot(data=data, x='year', y='val', hue='age_name', ci=None)
+plt.title('Cancer Cases by Age Group Over Time')
+plt.xlabel('Year')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.legend(title='Age Group', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
