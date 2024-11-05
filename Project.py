@@ -2,6 +2,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import scipy.stats as stats
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
 
 #Downlaod data set
 data = pd.read_csv(r"C:\Users\uresha\Dropbox\PC\Desktop\UH\Project\Data\Death and Incidence.csv")
@@ -449,6 +454,7 @@ plt.show()
 
 #EXPLORING DIFFERENCES BY AGE AND YEAR
 
+#Plot cancer cases by age group over the years
 plt.figure(figsize=(14, 8))
 sns.lineplot(data=data, x='year', y='val', hue='age_name', ci=None)
 plt.title('Cancer Cases by Age Group Over Time')
@@ -457,3 +463,410 @@ plt.ylabel('Count')
 plt.xticks(rotation=45)
 plt.legend(title='Age Group', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
+
+
+# CORRELATION BETWEEN AGE AND CANCER MORTALITY
+
+#Filter data for deaths only
+deaths_data = data[data['measure_name'] == 'Deaths']
+
+#Creating pivot table for deaths data
+correlation_data_deaths = deaths_data.pivot_table(values='val', index='age_name', columns='year', aggfunc='sum')
+
+#Calculating correlation matrix for deaths data
+correlation_matrix_deaths = correlation_data_deaths.corr()
+
+#Plot the heatmap 
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix_deaths, annot=True, cmap='coolwarm', cbar_kws={'label': 'Correlation'}, annot_kws={"fontsize": 8})
+plt.title('Correlation Between Cancer Mortality Across Years')
+plt.show()
+
+
+# CORRELATION BETWEEN AGE AND CANCER INCIDENCE
+
+#Filter data for incidence only
+incidence_data = data[data['measure_name'] == 'Incidence']
+
+#Creating pivot table for incidence data
+correlation_data_incidence = incidence_data.pivot_table(values='val', index='age_name', columns='year', aggfunc='sum')
+
+#Calculating correlation matrix for incidence data
+correlation_matrix_incidence = correlation_data_incidence.corr()
+
+#Plot the heatmap 
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix_incidence, annot=True, cmap='coolwarm', cbar_kws={'label': 'Correlation'}, annot_kws={"fontsize": 8})
+plt.title('Correlation Between Cancer Incidence Across Years')
+plt.show()
+
+#MAP THE INCOME LEVEL TO COUNTRY
+
+income_levels = {
+    'South Africa': 'Upper Middle-Income',
+    'Nigeria': 'Lower Middle-Income',
+    'China': 'Upper Middle-Income',
+    'India': 'Lower Middle-Income',
+    'Japan': 'High-Income',
+    'France': 'High-Income',
+    'Poland': 'Upper Middle-Income',
+    'United Kingdom': 'High-Income',
+    'United States of America': 'High-Income',
+    'Mexico': 'Upper Middle-Income',
+    'Brazil': 'Upper Middle-Income',
+    'Australia': 'High-Income'
+}
+
+#Create a new column 
+data['income_level'] = data['location_name'].map(income_levels)
+
+#Print data
+print(data)
+
+#CANCER MORTALITY TREND BY INCOME LEVEL AND YEAR 
+
+filtered_data = data[data['measure_name'].isin(['Deaths'])]
+
+# Plot the trend by income level and year for deaths and incidence
+plt.figure(figsize=(14, 8))
+sns.lineplot(data=filtered_data, x='year', y='val', hue='income_level')
+plt.title('Cancer Mortality Trends by Income Level')
+plt.xlabel('Year')
+plt.ylabel('Count')
+plt.legend(title='Income Level')
+plt.xticks(rotation=45)
+plt.show()
+
+
+#CANCER INCIDENCE TREND BY INCOME LEVEL AND YEAR 
+
+filtered_data = data[data['measure_name'].isin(['Incidence'])]
+
+# Plot the trend by income level and year for deaths and incidence
+plt.figure(figsize=(14, 8))
+sns.lineplot(data=filtered_data, x='year', y='val', hue='income_level')
+plt.title('Cancer Incidnec Trends by Income Level')
+plt.xlabel('Year')
+plt.ylabel('Count')
+plt.legend(title='Income Level')
+plt.xticks(rotation=45)
+plt.show()
+
+
+#IDENTIFY WHETHER THERE IS ANY RELATIONSHIP BETWEEN DEMOGRAPIC FACTORS
+
+#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND LOCATION
+
+#Filter data for "Deaths"
+deaths_data = data[data['measure_name'] == 'Deaths']
+
+#Creating a contingency table for Deaths
+contingency_table_deaths = pd.crosstab(deaths_data['sex_name'], deaths_data['location_name'])
+print("\nContingency Table for Deaths:")
+print(contingency_table_deaths)
+
+#Chi-square test 
+chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
+
+# Print results for Deaths
+print("\nResults for Deaths - - Gender & Country")
+print(f"Chi-square Statistic: {chi2_deaths}")
+print(f"P-value: {p_deaths}")
+print(f"Degrees of Freedom: {dof_deaths}")
+print("Expected Frequencies:\n", expected_deaths)
+
+
+#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND LOCATION
+
+#Filter data for "Incidence"
+incidence_data = data[data['measure_name'] == 'Incidence']
+
+# Create a contingency table for Incidence
+contingency_table_incidence = pd.crosstab(incidence_data['sex_name'], incidence_data['location_name'])
+print("\nContingency Table for Incidence:")
+print(contingency_table_incidence)
+
+#Chi-square test for Incidence
+chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
+
+# Print results
+print("\nResults for Incidence - Gender & Country")
+print(f"Chi-square Statistic: {chi2_incidence}")
+print(f"P-value: {p_incidence}")
+print(f"Degrees of Freedom: {dof_incidence}")
+print("Expected Frequencies:\n", expected_incidence)
+
+
+
+#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND AGE
+
+#Filter data for "Deaths"
+deaths_data = data[data['measure_name'] == 'Deaths']
+
+#Creating a contingency table for Deaths
+contingency_table_deaths = pd.crosstab(deaths_data['sex_name'], deaths_data['age_name'])
+print("\nContingency Table for Deaths:")
+print(contingency_table_deaths)
+
+#Chi-square test 
+chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
+
+#Print results
+print("\nResults for Deaths - Gender & Age")
+print(f"Chi-square Statistic: {chi2_deaths}")
+print(f"P-value: {p_deaths}")
+print(f"Degrees of Freedom: {dof_deaths}")
+print("Expected Frequencies:\n", expected_deaths)
+
+
+#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND AGE
+
+#Filter data for "Incidence"
+incidence_data = data[data['measure_name'] == 'Incidence']
+
+#Create a contingency table for Incidence
+contingency_table_incidence = pd.crosstab(incidence_data['sex_name'], incidence_data['age_name'])
+print("\nContingency Table for Incidence:")
+print(contingency_table_incidence)
+
+# Chi-square test for Incidence
+chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
+
+#Print results
+print("\nResults for Incidence - Gender & Age")
+print(f"Chi-square Statistic: {chi2_incidence}")
+print(f"P-value: {p_incidence}")
+print(f"Degrees of Freedom: {dof_incidence}")
+print("Expected Frequencies:\n", expected_incidence)
+
+
+#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
+
+#Filter data for "Deaths"
+deaths_data = data[data['measure_name'] == 'Deaths']
+
+#Creating a contingency table for Deaths
+contingency_table_deaths = pd.crosstab(deaths_data['sex_name'], deaths_data['income_level'])
+print("\nContingency Table for Deaths:")
+print(contingency_table_deaths)
+
+#Chi-square test 
+chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
+
+#Print results
+print("\nResults for Deaths - Gender & Income Level")
+print(f"Chi-square Statistic: {chi2_deaths}")
+print(f"P-value: {p_deaths}")
+print(f"Degrees of Freedom: {dof_deaths}")
+print("Expected Frequencies:\n", expected_deaths)
+
+
+#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
+
+#Filter data for "Incidence"
+incidence_data = data[data['measure_name'] == 'Incidence']
+
+#Create a contingency table for Incidence
+contingency_table_incidence = pd.crosstab(incidence_data['sex_name'], incidence_data['income_level'])
+print("\nContingency Table for Incidence:")
+print(contingency_table_incidence)
+
+# Chi-square test for Incidence
+chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
+
+#Print results 
+print("\nResults for Incidence - Gender & Income Level")
+print(f"Chi-square Statistic: {chi2_incidence}")
+print(f"P-value: {p_incidence}")
+print(f"Degrees of Freedom: {dof_incidence}")
+print("Expected Frequencies:\n", expected_incidence)
+
+
+
+#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
+
+#Filter data for "Deaths"
+deaths_data = data[data['measure_name'] == 'Deaths']
+
+#Creating a contingency table for Deaths
+contingency_table_deaths = pd.crosstab(deaths_data['age_name'], deaths_data['income_level'])
+print("\nContingency Table for Deaths:")
+print(contingency_table_deaths)
+
+#Chi-square test 
+chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
+
+#Print results
+print("\nResults for Deaths - Age & Income Level")
+print(f"Chi-square Statistic: {chi2_deaths}")
+print(f"P-value: {p_deaths}")
+print(f"Degrees of Freedom: {dof_deaths}")
+print("Expected Frequencies:\n", expected_deaths)
+
+
+#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
+
+#Filter data for "Incidence"
+incidence_data = data[data['measure_name'] == 'Incidence']
+
+# Create a contingency table for Incidence
+contingency_table_incidence = pd.crosstab(incidence_data['age_name'], incidence_data['income_level'])
+print("\nContingency Table for Incidence:")
+print(contingency_table_incidence)
+
+#Chi-square test
+chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
+
+#Print results 
+print("\nResults for Incidence - Age & Income Level")
+print(f"Chi-square Statistic: {chi2_incidence}")
+print(f"P-value: {p_incidence}")
+print(f"Degrees of Freedom: {dof_incidence}")
+print("Expected Frequencies:\n", expected_incidence)
+
+
+
+#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND COUNTRY
+
+#Filter data for "Deaths"
+deaths_data = data[data['measure_name'] == 'Deaths']
+
+#Creating a contingency table for Deaths
+contingency_table_deaths = pd.crosstab(deaths_data['age_name'], deaths_data['location_name'])
+print("\nContingency Table for Deaths:")
+print(contingency_table_deaths)
+
+#Chi-square test 
+chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
+
+#Print results
+print("\nResults for Deaths - Age & Country")
+print(f"Chi-square Statistic: {chi2_deaths}")
+print(f"P-value: {p_deaths}")
+print(f"Degrees of Freedom: {dof_deaths}")
+print("Expected Frequencies:\n", expected_deaths)
+
+
+#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND COUNTRY
+
+#Filter data for "Incidence"
+incidence_data = data[data['measure_name'] == 'Incidence']
+
+#Create a contingency table 
+contingency_table_incidence = pd.crosstab(incidence_data['age_name'], incidence_data['location_name'])
+print("\nContingency Table for Incidence:")
+print(contingency_table_incidence)
+
+#Chi-square test
+chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
+
+#Print results 
+print("\nResults for Incidence - Age & Country")
+print(f"Chi-square Statistic: {chi2_incidence}")
+print(f"P-value: {p_incidence}")
+print(f"Degrees of Freedom: {dof_incidence}")
+print("Expected Frequencies:\n", expected_incidence)
+
+
+
+#EFFECT ON INCOME LEVEL ON CANCER COUNT 
+
+#Function to perform ANOVA 
+def perform_anova(data, measure_name):
+    # Filter data for the specific measure
+    groups = data[data['measure_name'] == measure_name].groupby('income_level')['val'].apply(list)
+    
+    #F value, P value
+    f_statistic, p_value = stats.f_oneway(*groups)
+
+    #Print results
+    print(f"Results for {measure_name}:")
+    print(f"F-Statistic: {f_statistic:.4f}, P-value: {p_value:.4f}")
+    print("Reject the null hypothesis." if p_value < 0.05 else "Accept the null hypothesis.")
+    print("=" * 50)
+
+#ANOVA for both Deaths and Incidence
+for measure in ["Deaths", "Incidence"]:
+    perform_anova(data, measure)
+    
+    
+#POST-HOC ANALYSIS
+
+#Recoding dictionary
+income_id = {
+    'Upper Middle-Income': 1,
+    'Lower Middle-Income': 2,
+    'High-Income': 3
+}
+
+#Recode the income_level in new column
+data['income_id'] = data['income_level'].replace(income_id)
+
+#Display the updated DataFrame
+print(data)
+
+
+#Tukey's HSD post-hoc test
+def perform_posthoc(data, measure_name):
+    
+    measure_data = data[data['measure_name'] == measure_name]
+
+    #Fit the model
+    model = ols('val ~ C(income_id)', data=measure_data).fit()
+
+    #Perform Tukey's HSD
+    tukey_results = pairwise_tukeyhsd(endog=measure_data['val'], groups=measure_data['income_id'], alpha=0.05)
+
+    #Print Tukey's HSD results
+    print(f"\nTukey's HSD Results for {measure_name}:")
+    print(tukey_results)
+    print("=" * 50)
+
+#Perform Tukey's HSD
+for measure in ["Deaths", "Incidence"]:
+    perform_posthoc(data, measure)
+    
+
+#EFFECT ON AGE ON CANCER COUNT 
+
+#Function to perform ANOVA 
+def perform_anova(data, measure_name):
+    # Filter data for the specific measure
+    groups = data[data['measure_name'] == measure_name].groupby('age_name')['val'].apply(list)
+    
+    #F value, P value
+    f_statistic, p_value = stats.f_oneway(*groups)
+
+    #Print results
+    print(f"Results for {measure_name}:")
+    print(f"F-Statistic: {f_statistic:.4f}, P-value: {p_value:.4f}")
+    print("Reject the null hypothesis." if p_value < 0.05 else "Accept the null hypothesis.")
+    print("=" * 50)
+
+#ANOVA for both Deaths and Incidence
+for measure in ["Deaths", "Incidence"]:
+    perform_anova(data, measure)
+
+#POST-HOC ANALYSIS
+
+#Tukey's HSD post-hoc test
+def perform_posthoc(data, measure_name):
+    
+    measure_data = data[data['measure_name'] == measure_name]
+
+    #Fit the model
+    model = ols('val ~ C(age_name)', data=measure_data).fit()
+
+    #Perform Tukey's HSD
+    tukey_results = pairwise_tukeyhsd(endog=measure_data['val'], groups=measure_data['age_name'], alpha=0.05)
+
+    #Print Tukey's HSD results
+    print(f"\nTukey's HSD Results for {measure_name}:")
+    print(tukey_results)
+    print("=" * 50)
+
+# Perform Tukey's HSD for both Deaths and Incidence
+for measure in ["Deaths", "Incidence"]:
+    perform_posthoc(data, measure)
+    
+    
