@@ -1,5 +1,49 @@
-REPLACE
-United Kingdom of Great Britain and Northern Ireland = United Kingdom
+
+*Title of the Project
+
+Analysing Global Health Trends: A Time Series Analysis of Cancer Incidence and Mortality Rate
+
+*Overview 
+
+This project involves a detailed analysis of global cancer incidence and mortality rates using a dataset containing over 500,000 entries. The analysis aims to identify trends and patterns in cancer incidence and mortality rate, with a specific focus on demographic factors like age, gender, and country with specific cancer types. And also dataset include the colomns with encoded data for each variable type.
+
+Dataset
+The dataset, titled "Death and Incidence.csv", contains the following columns:
+
+1. location_name: Country or region where the data was recorded.
+2. age_name: Age group of the population.
+3. sex_name: Gender of the population.
+4. cause_name: Type of cancer or cause of death.
+5. measure_name: Measure type (either 'Deaths' or 'Incidence').
+6. val: Value representing the count for deaths or incidences.
+7. lower: Lower bound of the confidence interval.
+8. upper: Upper bound of the confidence interval.
+
+*Research Question
+
+What are the trends in global cancer incidence and mortality rates over the past two decades, and how do these trends differ across various demographics, such as income levels, geographic regions, age and gender?
+
+*Research Objectives
+
+Analyze and identify trends in global cancer incidence and mortality rates (2000- 2021).
+Identifying disparities based on demographic data.
+Forecast future trends in cancer incidence and mortality using time series analysis.
+
+*Libraries Used
+
+Pandas: For data manipulation and analysis.
+Matplotlib and Seaborn: For data visualization.
+Scipy: For statistical tests and calculations.
+Statsmodels: For regression analysis and hypothesis testing.
+
+### Coding ##
+
+*Data Cleaning and Preprocessing:
+
+Renamed values for consistency (e.g., "United Kingdom of Great Britain and Northern Ireland" replaced with "United Kingdom").
+REPLACED ---> United Kingdom of Great Britain and Northern Ireland => United Kingdom
+
+Added a column for cancer type abbreviations for easier analysis.
 
 ABBREVATION LIST FOR cause_name
 
@@ -37,3 +81,52 @@ ABBREVATION LIST FOR cause_name
     Thyroid cancer = ThyC,
     Tracheal, bronchus, and lung cancer = TBLC,
     Uterine cancer = UC
+
+*Income Level Mapping
+
+Mapping countries to their income levels (e.g., Upper Middle-Income, High-Income) 
+
+*Exploratory Data Analysis (EDA):
+
+Checked for missing values, duplicates, and data types.
+Performed summary statistics to understand the distribution and structure of the data.
+
+*Generated Graphs using line graph, bar charts, heat maps:
+
+Country-wise and Age-wise Analysis
+Distribution of Cancer Types
+Gender-based Analysis
+Cause-specific Cancer Distribution
+Trends in cancer incidence and mortality over time
+Mortality rates across multiple countries over time
+Yearly Trends for Each Cancer Cause
+Cancer Cases by Age Group Over Time
+Incidence and mortality by Income Level
+
+*Correlation Analysis
+
+Correlation matrix to visualize the relationship between cancer incidence and mortality across years
+
+*Cross-Tabulations:
+
+Age group by gender
+Age group by cancer cause
+Age group by measure name (incidence or mortality)
+Age group by country
+Gender by cancer causes
+Gender by country
+Country by cancer cause
+Gender and location (country)
+Gender and age group
+Gender and income level
+Age group and income level
+Age group and country
+
+*Contingency Table
+
+Contingency tables for demographic relationships in cancer incidence and mortality.
+
+**ANOVA: A one-way Analysis of Variance (ANOVA) to test whether there is a significant difference in cancer counts (deaths and incidence) between different income levels and age groups.
+
+**Post-Hoc Analysis: A Tukey’s HSD (Honest Significant Difference) test for pairwise comparisons following the ANOVA to further explore which specific income levels or age groups differ.
+
