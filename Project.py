@@ -869,4 +869,84 @@ def perform_posthoc(data, measure_name):
 for measure in ["Deaths", "Incidence"]:
     perform_posthoc(data, measure)
     
-    
+######################
+
+#TIME SERIES ANALYSIS
+
+#Aggregate 'Deaths' by year
+deaths_series = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+
+#Aggregate 'Incidence' by year
+incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+
+#Prepare time series for deaths
+deaths_series.set_index('year', inplace=True)
+deaths_series.index = pd.to_datetime(deaths_series.index, format='%Y')
+
+#Prepare time series for incidence
+incidence_series.set_index('year', inplace=True)
+incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
+
+model_arima_deaths = ARIMA(deaths_series['val'], order=(1, 1, 1))
+arima_result_deaths = model_arima_deaths.fit()
+forecast_arima_deaths = arima_result_deaths.forecast(steps=10)
+
+model_arima_incidence = ARIMA(incidence_series['val'], order=(1, 1, 1))
+arima_result_incidence = model_arima_incidence.fit()
+forecast_arima_incidence = arima_result_incidence.forecast(steps=10)
+
+#Model Forecast Death
+print("ARIMA Model Results for Deaths:")
+model_arima_deaths = ARIMA(deaths_series['val'], order=(1, 1, 1))
+arima_result_deaths = model_arima_deaths.fit()
+forecast_arima_deaths = arima_result_deaths.forecast(steps=10)
+
+#Print the forecasted values for Deaths
+print("Forecasted Values (Deaths):")
+print(forecast_arima_deaths)
+
+#Model Forcast Incidence
+print("\nARIMA Model Results for Incidence:")
+model_arima_incidence = ARIMA(incidence_series['val'], order=(1, 1, 1))
+arima_result_incidence = model_arima_incidence.fit()
+forecast_arima_incidence = arima_result_incidence.forecast(steps=10)
+
+#Print the forecasted values for Incidence
+print("Forecasted Values (Incidence):")
+print(forecast_arima_incidence)
+
+#Converting historical_years_deaths to datetime and forecast years
+historical_deaths = deaths_series.index
+forecast_deaths = pd.date_range(start=historical_years_deaths[-1], periods=10, freq='Y')
+
+#Historical Data for Deaths
+historical_values_deaths = deaths_series['val']
+
+#Plot the Deaths forcast graph
+plt.figure(figsize=(12, 6))
+plt.plot(historical_deaths, historical_values_deaths, label="Historical Deaths", color='blue')
+plt.plot(forecast_deaths, forecast_arima_deaths, label="Forecasted Deaths", color='red', linestyle='--')
+plt.title("Time Series Analysis Forecast: Deaths ARIMA model")
+plt.xlabel("Year")
+plt.ylabel("Deaths")
+plt.legend()
+plt.grid()
+plt.show()
+
+#Converting historical_years_incidence to datetime and forecast years
+historical_incidence = incidence_series.index
+forecast_incidence = pd.date_range(start=historical_incidence[-1], periods=10, freq='Y')
+
+#Historical Data for Incidence
+historical_values_incidence = incidence_series['val']
+
+#Plot the Incidence forecast graph
+plt.figure(figsize=(12, 6))
+plt.plot(historical_incidence, historical_values_incidence, label="Historical Incidence", color='green')
+plt.plot(forecast_incidence, forecast_arima_incidence, label="Forecasted Incidence", color='orange', linestyle='--')
+plt.title("Time Series Analysis Forecast: Incidence ARIMA model")
+plt.xlabel("Year")
+plt.ylabel("Incidence")
+plt.legend()
+plt.grid()
+plt.show()
