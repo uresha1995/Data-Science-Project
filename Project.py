@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[5]:
+# In[7]:
 
 
 #Downlaod relevant libraries
@@ -20,7 +20,7 @@ get_ipython().system('pip install ruptures')
 import ruptures as rpt
 
 
-# In[6]:
+# In[8]:
 
 
 #Downlaod data set
@@ -31,7 +31,7 @@ print(data.head(10))
 print(data.tail(10))
 
 
-# In[7]:
+# In[9]:
 
 
 #PREPRCOSESSING
@@ -40,28 +40,28 @@ print(data.tail(10))
 print(f'Death : {data.shape}')
 
 
-# In[8]:
+# In[10]:
 
 
 #Check types of the data and values
 print(data.info())
 
 
-# In[9]:
+# In[11]:
 
 
 #Missing values
 print(data.isnull().sum())
 
 
-# In[10]:
+# In[12]:
 
 
 #Summary statistics
 print(data.describe())
 
 
-# In[11]:
+# In[13]:
 
 
 #Identify the duplicates
@@ -69,7 +69,7 @@ duplicates = data.duplicated().sum()
 print(f'Number of duplicate rows: {duplicates}')
 
 
-# In[12]:
+# In[14]:
 
 
 #Rename the location name and cause name
@@ -79,7 +79,7 @@ data['location_name'] = data['location_name'].replace('United Kingdom of Great B
 print(data['location_name'].unique())
 
 
-# In[13]:
+# In[15]:
 
 
 # Create a mapping dictionary for cancer cause names and their abbreviations
@@ -127,7 +127,7 @@ data['cause_abbreviation'] = data['cause_name'].replace(can_cause_abbreviations)
 print(data[['cause_name', 'cause_abbreviation']].head())
 
 
-# In[14]:
+# In[16]:
 
 
 #EDA
@@ -146,7 +146,7 @@ Age_count = data['age_name'].value_counts().sort_index()
 print(Age_count)
 
 
-# In[15]:
+# In[17]:
 
 
 #DISTRIBUTION OF AGE GROUP AND GENDER BY COUNTRY
@@ -201,7 +201,7 @@ for country in countries:
     plt.show()
 
 
-# In[16]:
+# In[18]:
 
 
 #DISTRIBUTION OF GENDER BY COUNTRY
@@ -254,7 +254,7 @@ for country in countries:
     plt.show()
 
 
-# In[17]:
+# In[19]:
 
 
 #CAUSES OF DEATHS BY COUNTRY
@@ -310,7 +310,7 @@ for country in countries:
     plt.show()
 
 
-# In[18]:
+# In[20]:
 
 
 #CAUSE OF CANSER BY COUNTRY AND GENDER
@@ -365,7 +365,7 @@ for country in countries:
     plt.show()
 
 
-# In[19]:
+# In[21]:
 
 
 #AGE GROUP BY GENDER
@@ -377,7 +377,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[20]:
+# In[22]:
 
 
 #AGE GROUP BY CANCER CAUSE
@@ -389,7 +389,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['cause_abbreviation'])
 print(age_sex_crosstab)
 
 
-# In[21]:
+# In[23]:
 
 
 #AGE GROUP BY MEASURE NAME
@@ -401,7 +401,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['measure_name'])
 print(age_sex_crosstab)
 
 
-# In[22]:
+# In[24]:
 
 
 #AGE GROUP BY COUNTRY
@@ -413,7 +413,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['location_name'])
 print(age_sex_crosstab)
 
 
-# In[23]:
+# In[25]:
 
 
 #AGE GROUP BY CAUSES OF DEATH
@@ -425,7 +425,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
 print(age_sex_crosstab)
 
 
-# In[24]:
+# In[26]:
 
 
 #GENDER BY CAUSES OF DEATH
@@ -437,7 +437,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[25]:
+# In[27]:
 
 
 #GENDER BY COUNTRY
@@ -449,7 +449,7 @@ age_sex_crosstab = pd.crosstab(data['location_name'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[26]:
+# In[28]:
 
 
 #COUNTRY BY CAUSES OF DEATH
@@ -461,7 +461,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['location_name']
 print(age_sex_crosstab)
 
 
-# In[27]:
+# In[29]:
 
 
 #GENDER BY CAUSES OF DEATH
@@ -473,7 +473,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[28]:
+# In[30]:
 
 
 #TREND BY YEAR AND MEASURE TYPE - GLOBALLY
@@ -488,7 +488,7 @@ plt.legend(title='Measure Type')
 plt.show()
 
 
-# In[29]:
+# In[31]:
 
 
 #TREND BY YEAR AND MEASURE TYPE - GLOBALLY_check clear view
@@ -505,7 +505,7 @@ plt.legend(title='Measure Type')
 plt.show()
 
 
-# In[30]:
+# In[32]:
 
 
 #MOTALITY RATE COMPARISON OVER TIME
@@ -574,7 +574,7 @@ plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize
 plt.show()
 
 
-# In[31]:
+# In[33]:
 
 
 #MOTALITY RATE COMPARISON OVER TIME _ TO TAKE CLEAR VIEW CHINA REMOVED
@@ -643,7 +643,7 @@ plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize
 plt.show()
 
 
-# In[32]:
+# In[34]:
 
 
 #YEARLY TREND FOR EACH CANCER CAUSE
@@ -659,7 +659,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[33]:
+# In[35]:
 
 
 #YEARLY TREND FOR EACH CANCER CAUSE
@@ -675,7 +675,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[34]:
+# In[36]:
 
 
 #EXPLORING DIFFERENCES BY AGE AND YEAR
@@ -691,7 +691,7 @@ plt.legend(title='Age Group', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
 
 
-# In[35]:
+# In[37]:
 
 
 #CORRELATION BETWEEN AGE AND CANCER INCIDENCE #####################
@@ -712,7 +712,7 @@ plt.title('Correlation Between Cancer Incidence Across Years')
 plt.show()
 
 
-# In[36]:
+# In[38]:
 
 
 #MAP THE INCOME LEVEL TO COUNTRY
@@ -739,7 +739,7 @@ data['income_level'] = data['location_name'].map(income_levels)
 print(data)
 
 
-# In[37]:
+# In[39]:
 
 
 #CANCER MORTALITY TREND BY INCOME LEVEL AND YEAR 
@@ -757,7 +757,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[38]:
+# In[40]:
 
 
 #CANCER INCIDENCE TREND BY INCOME LEVEL AND YEAR_Take clear view
@@ -775,7 +775,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[39]:
+# In[41]:
 
 
 #IDENTIFY WHETHER THERE IS ANY RELATIONSHIP BETWEEN DEMOGRAPIC FACTORS
@@ -801,7 +801,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[40]:
+# In[42]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND LOCATION
@@ -825,7 +825,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[41]:
+# In[43]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND AGE
@@ -849,7 +849,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[42]:
+# In[44]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND AGE
@@ -873,7 +873,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[43]:
+# In[45]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
@@ -897,7 +897,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[44]:
+# In[46]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
@@ -921,7 +921,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[45]:
+# In[47]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
@@ -945,7 +945,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[46]:
+# In[48]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
@@ -969,7 +969,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[47]:
+# In[49]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND COUNTRY
@@ -993,7 +993,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[48]:
+# In[50]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND COUNTRY
@@ -1017,7 +1017,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[49]:
+# In[51]:
 
 
 #EFFECT ON INCOME LEVEL ON CANCER COUNT 
@@ -1041,7 +1041,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_anova(data, measure) 
 
 
-# In[50]:
+# In[52]:
 
 
 #POST-HOC ANALYSIS
@@ -1060,7 +1060,7 @@ data['income_id'] = data['income_level'].replace(income_id)
 print(data)
 
 
-# In[51]:
+# In[53]:
 
 
 #Tukey's HSD post-hoc test
@@ -1093,7 +1093,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_posthoc(data, measure)
 
 
-# In[52]:
+# In[54]:
 
 
 #EFFECT ON AGE ON CANCER COUNT 
@@ -1117,7 +1117,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_anova(data, measure)
 
 
-# In[53]:
+# In[55]:
 
 
 #POST-HOC ANALYSIS
@@ -1143,7 +1143,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_posthoc(data, measure)
 
 
-# In[54]:
+# In[56]:
 
 
 #DICKEY-FULLER TEST
@@ -1165,374 +1165,21 @@ for measure in ["Deaths", "Incidence"]:
   #  print("The time series is stationary (fail to reject null hypothesis).")
 
 
-# In[55]:
-
-
-#DICKEY FULLER TEST - DEATHS DATA
-
-#Filter Deaths
-deaths_data = data[data['measure_name'] == 'Deaths']['val']
-
-#Perform ADF test 
-adf_result = adfuller(deaths_data)
-
-#Extract and interpret results
-print("ADF Statistic:", adf_result[0])
-print("p-value:", adf_result[1])
-print("Critical Values:", adf_result[4])
-
-if adf_result[1] < 0.05:
-    print("The time series is not stationary - data has unit root")
-else:
-    print("The time series is stationary - data has no unit root")
-
-
-# In[56]:
-
-
-#DIFFERENCING DATA - DEATH DATA
-
-#Filter Deaths data
-deaths_data = data[data['measure_name'] == 'Deaths']['val']
-
-#Data differencing Deaths Data
-deaths_diff = deaths_data.diff().dropna()
-
-#Perform ADF test on differenced Data
-from statsmodels.tsa.stattools import adfuller
-
-adf_result = adfuller(deaths_diff)
-print("ADF Statistic:", adf_result[0])
-print("p-value:", adf_result[1])
-print("Critical Values:", adf_result[4])
-
-if adf_result[1] < 0.05:
-    print("The differenced time series is not stationary - data has unit root")
-else:
-    print("The differenced time series is stationary - data has no unit root")
-
-
-# In[57]:
-
-
-#SECOND DIFFERENCING - DEATH DATA
-
-#Filter Deaths data
-deaths_diff2 = deaths_diff.diff().dropna()
-
-#Perform ADF test on twice-differenced data
-adf_result = adfuller(deaths_diff2)
-print("ADF Statistic:", adf_result[0])
-print("p-value:", adf_result[1])
-print("Critical Values:", adf_result[4])
-
-if adf_result[1] < 0.05:
-    print("The twice-differenced time series is not stationary - data has unit root")
-else:
-    print("The twice-differenced time series is stationary - data has no unit root")
-
-
 # In[58]:
 
 
-#APPLY LOG TRANSFORMATION - DEATH DATA
-deaths_log = np.log(deaths_data[deaths_data > 0]) # (ince p value still <0.05)
+#DICKEY FULLER TEST - DEATHS
 
-#Differencing after log transformation
-deaths_log_diff = deaths_log.diff().dropna()
+#Filter the data for 'Deaths'
+deaths_data = data[data['measure_name'] == 'Deaths']
 
-#Perform ADF test on log-differenced data
-adf_result = adfuller(deaths_log_diff)
-print("ADF Statistic:", adf_result[0])
-print("p-value:", adf_result[1])
-print("Critical Values:", adf_result[4])
+#Aggregate the data by year
+aggregated_deaths = deaths_data.groupby('year')['val'].sum()
 
-if adf_result[1] < 0.05:
-    print("The log-differenced time series is not stationary - data has unit root")
-else:
-    print("The log-differenced time series is stationary - data has no unit root")
+#Perform the ADF test 
+adf_result = adfuller(aggregated_deaths)
 
-
-# In[59]:
-
-
-#CHECK THE STRUCTURAL BREAKS
-
-from statsmodels.tsa.stattools import zivot_andrews
-
-#Filter Deaths data
-deaths_data = data[data['measure_name'] == 'Deaths']['val']
-
-#Sample a random subset of 50,000 data points (20% of data)
-sampled_deaths_data = deaths_data.sample(n=50000, random_state=42)
-
-#Perform Zivot-Andrews test on the sampled data
-za_result = zivot_andrews(sampled_deaths_data.dropna(), trim=0.15)
-
-#Output results
-print("Zivot-Andrews Statistic:", za_result[0])
-print("p-value:", za_result[1])
-print("Critical Values:", za_result[2])
-
-if za_result[1] < 0.05:
-    print("The series has a structural break.")
-else:
-    print("No structural break detected.")
-
-
-# In[60]:
-
-
-import numpy as np
-from statsmodels.tsa.stattools import zivot_andrews
-
-# Define Zivot-Andrews test
-def perform_za_test(data_chunk):
-    result = zivot_andrews(data_chunk.dropna(), trim=0.15)
-    return {
-        "Statistic": result[0],
-        "p-value": result[1],
-        "Critical Values": result[2]
-    }
-
-# Chunk the dataset into 20 equal parts
-chunks = np.array_split(deaths_data, 20)
-
-# Run the test on each chunk
-results = [perform_za_test(chunk) for chunk in chunks]
-
-# Print the results
-for i, res in enumerate(results):
-    print(f"Chunk {i+1}:")
-    print(f"  Zivot-Andrews Statistic: {res['Statistic']}")
-    print(f"  p-value: {res['p-value']}")
-    print(f"  Critical Values: {res['Critical Values']}")
-    if res["p-value"] < 0.05:
-        print("  Structural break detected.")
-    else:
-        print("  No structural break detected.")
-
-
-# In[61]:
-
-
-#VISUALIZING ZIVOT-ANDRE TEST FOR EACH CHUNK
-
-# Let's create a function to find and plot the break points for chunks where break is detected
-def plot_with_break(chunk, chunk_idx):
-    plt.figure(figsize=(10, 5))
-    plt.plot(chunk, label=f"Chunk {chunk_idx+1}")
-    plt.title(f"Plot of Chunk {chunk_idx+1} with Break Point")
-    # Visualize the break point (you might want to fine-tune this part)
-    break_point = len(chunk) // 2  # Example of placing break in the middle (adjust as needed)
-    plt.axvline(x=break_point, color='r', linestyle='--', label="Potential Break Point")
-    plt.legend()
-    plt.show()
-
-# Visualizing the break point for each chunk
-for i, chunk in enumerate(chunks):
-    plot_with_break(chunk, i)
-
-
-# In[76]:
-
-
-#IMPLEMENT A CHANGE POINT DETECTION METHOD
-
-def detect_changes(data_chunk, n_bkps=1):  
-    model = "l2"  # Least squares optimization
-
-    #if it's a pandas series convert data_chunk to NumPy array 
-    if isinstance(data_chunk, pd.Series):
-        data_chunk = data_chunk.to_numpy()
-
-    #Reshape data_chunk to ensure it's 2D
-    if data_chunk.ndim == 1:
-        data_chunk = data_chunk.reshape(-1, 1)
-
-    algo = rpt.Pelt(model=model).fit(data_chunk)
-    result = algo.predict(pen=10)  # Use penalty instead of n_bkps
-    return result
-
-#Assume 'chunks' is a list of data segments
-for i, chunk in enumerate(chunks):
-    try:
-        change_points = detect_changes(chunk)
-        print(f"Change points detected for Chunk {i+1}: {change_points}")
-    except Exception as e:
-        print(f"Error processing Chunk {i+1}: {e}")
-
-
-# In[104]:
-
-
-#MEREGE SEGMENT BASED CHANGE POINTS
-
-def merge_chunks_with_change_points(data, change_points):
-    """
-    Merge data segments based on detected change points.
-    """
-    segments = []
-    start_idx = 0
-    for end_idx in change_points:
-        segments.append(data[start_idx:end_idx])
-        start_idx = end_idx
-    segments.append(data[start_idx:])  # Last segment
-    return segments
-
-# Example usage for merging
-all_segments = []
-for i, chunk in enumerate(chunks):
-    try:
-        change_points = detect_changes(chunk)  # Detect change points
-        segments = merge_chunks_with_change_points(chunk, change_points)
-        all_segments.extend(segments)
-        
-        # Print each segment for debugging
-        print(f"Segments for Chunk {i+1}: {segments}")
-    except Exception as e:
-        print(f"Error processing Chunk {i+1}: {e}")
-
-
-# In[106]:
-
-
-#RUN ARIMA MODEL
-
-from statsmodels.tsa.arima.model import ARIMA
-import matplotlib.pyplot as plt
-
-# Combine all segments into one continuous time series
-full_data = np.concatenate(all_segments)
-
-def apply_arima(time_series):
-    """
-    Apply ARIMA model to the time series and plot the forecast.
-    """
-    # Fit ARIMA model to the entire time series
-    model = ARIMA(time_series, order=(1, 1, 1))  # ARIMA(1,1,1) as an example
-    model_fit = model.fit()
-
-    # Forecast the next 10 time steps
-    forecast = model_fit.forecast(steps=10)
-
-    # Plot the original data and forecast
-    plt.figure(figsize=(10, 6))
-    plt.plot(time_series, label="Original Data")
-    plt.plot(np.arange(len(time_series), len(time_series) + 10), forecast, label="Forecast", color="red")
-    plt.title("ARIMA Model Forecast on Combined Data")
-    plt.legend()
-    plt.show()
-
-# Apply ARIMA on the combined dataset
-apply_arima(full_data)
-
-
-# In[134]:
-
-
-############################
-
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from statsmodels.tsa.arima.model import ARIMA
-
-# 1. Aggregate data by year
-def aggregate_by_year(data):
-    """
-    Aggregate data by year to get yearly data points.
-    Assumes the 'date' column is already in datetime format.
-    """
-    data['Year'] = data['date'].dt.year  # Extract year from date column
-    yearly_data = data.groupby('Year')['Cancer_Cases'].sum()  # Sum cases for each year
-    return yearly_data
-
-# 2. Detect Change Points (you can use various methods for change point detection)
-# Here, we're using a simple rolling mean approach to detect change points
-def detect_changes(data, window=3):
-    """
-    Detect change points by calculating the rolling mean and identifying large deviations.
-    """
-    rolling_mean = data.rolling(window).mean()
-    residuals = np.abs(data - rolling_mean)
-    change_points = residuals[residuals > residuals.quantile(0.95)].index  # Detect where residuals are large
-    return change_points
-
-# 3. Merge Segments Based on Change Points
-def merge_chunks_with_change_points(data, change_points):
-    """
-    Merge data segments based on detected change points.
-    """
-    segments = []
-    start_idx = 0
-    for end_idx in change_points:
-        segments.append(data[start_idx:end_idx])
-        start_idx = end_idx
-    segments.append(data[start_idx:])  # Last segment
-    return segments
-
-# 4. Apply ARIMA Model for Forecasting
-def apply_arima_model(data, order=(5, 1, 0)):
-    """
-    Apply ARIMA model on the data and forecast the next points.
-    """
-    model = ARIMA(data, order=order)
-    model_fit = model.fit()
-    forecast = model_fit.forecast(steps=5)  # Forecast next 5 years (adjust as needed)
-    return model_fit, forecast
-
-# Example Usage:
-
-# Load your dataset (assuming the dataset has a 'date' column and 'Cancer_Cases' column)
-# data = pd.read_csv('your_dataset.csv')  # Uncomment if loading from CSV
-data['date'] = pd.to_datetime(data['date'], errors='coerce')  # Convert date column to datetime if not already
-
-# Aggregate by year
-yearly_data = aggregate_by_year(data)
-
-# Detect change points
-change_points = detect_changes(yearly_data)
-
-# Merge segments based on change points
-segments = merge_chunks_with_change_points(yearly_data, change_points)
-
-# Combine all segments into one dataset for ARIMA modeling
-combined_data = pd.concat(segments)
-
-# Apply ARIMA model to the combined data
-model_fit, forecast = apply_arima_model(combined_data)
-
-# Plot the results
-plt.figure(figsize=(10, 6))
-plt.plot(yearly_data.index, yearly_data.values, label="Original Data", color='blue', marker='o')
-plt.plot(np.arange(len(yearly_data), len(yearly_data) + len(forecast)), forecast, label="Forecast", color='red', marker='x')
-plt.title("Cancer Cases Over Time with ARIMA Forecast")
-plt.xlabel("Year")
-plt.ylabel("Cancer Cases")
-plt.xticks(yearly_data.index.append(pd.Index(np.arange(len(yearly_data), len(yearly_data) + len(forecast)))))
-plt.legend()
-plt.grid(True)
-plt.show()
-
-# Print ARIMA model summary and forecast
-print(model_fit.summary())
-print(f"Forecasted Cancer Cases for the next 5 years: {forecast}")
-
-
-# In[136]:
-
-
-#Dickey-Fuller test _Incidence
-
-#Filter Incidence
-incidence_data = data[data['measure_name'] == 'Incidence']['val']
-
-#Perform ADF test on all data for incidence
-adf_result = adfuller(incidence_data)
-
-#Extract and interpret
+#Print the results
 print("ADF Statistic:", adf_result[0])
 print("p-value:", adf_result[1])
 print("Critical Values:", adf_result[4])
@@ -1543,8 +1190,122 @@ else:
     print("The time series is stationary - data has no unit root")
 
 
+# In[116]:
+
+
+#DICKEY FULLER TEST - INCIDENCE
+
+#Filter the data for 'Deaths'
+deaths_incidence = data[data['measure_name'] == 'Incidence']
+
+#Aggregate the data by year
+aggregated_incidence = deaths_data.groupby('year')['val'].sum()
+
+#Perform the ADF test 
+adf_result = adfuller(aggregated_deaths)
+
+#Print the results
+print("ADF Statistic:", adf_result[0])
+print("p-value:", adf_result[1])
+print("Critical Values:", adf_result[4])
+
+if adf_result[1] < 0.05:
+    print("The time series is not stationary - data has unit root")
+else:
+    print("The time series is stationary - data has no unit root")
+
+
+# In[159]:
+
+
+#TIME SERIES ANALYSIS
+
+#ARIMA MODEL - DEATHS
+
+#Aggregate Deaths by year
+deaths_series = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+
+#Prepare time series for Deaths
+deaths_series.set_index('year', inplace=True)
+deaths_series.index = pd.to_datetime(deaths_series.index, format='%Y')
+
+#Define function
+def run_arima_and_plot(series, title, color_historical, color_forecast):
+    #Fit ARIMA model
+    model = ARIMA(series['val'], order=(1, 1, 1))  # Adjust the (p, d, q) order as needed
+    result = model.fit()
+    
+    #Forecast the next 10 years
+    forecast = result.forecast(steps=10)
+    
+    #Print results
+    print(f"\nARIMA Model Results for {title}:")
+    print(result.summary())
+    print(f"Forecasted Values ({title}):")
+    print(forecast)
+    
+    #Plot historical and forecasted values
+    historical_years = series.index
+    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(1), periods=10, freq='YE')
+    historical_values = series['val']
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
+    plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
+    plt.title(f"Time Series Analysis Forecast: Deaths ARIMA Model")
+    plt.xlabel("Year")
+    plt.ylabel(title)
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+# Run for Deaths
+run_arima_and_plot(deaths_series, "Deaths", color_historical='blue', color_forecast='red')
+
+
+# In[203]:
+
+
+# Aggregate Incidence by year
+incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+
+# Prepare time series for Incidence
+incidence_series.set_index('year', inplace=True)
+incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
+
+# Define function
+def run_arima_and_plot(series, title, color_historical, color_forecast):
+    # Fit ARIMA model
+    model = ARIMA(series['val'], order=(1, 1, 1))  
+    result = model.fit()
+    
+    # Forecast the next 10 years
+    forecast = result.forecast(steps=10)
+    
+    # Print results
+    print(f"\nARIMA Model Results for {title}:")
+    print(result.summary())
+    print(f"Forecasted Values ({title}):")
+    print(forecast)
+    
+    # Plot historical and forecasted values
+    historical_years = series.index
+    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(0), periods=10, freq='YE')
+    historical_values = series['val']
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
+    plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
+    plt.title(f"Time Series Analysis Forecast: {title} ARIMA Model")
+    plt.xlabel("Year")
+    #plt.xticks(range(2000, 2033, 2))
+    plt.ylabel(title)
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+# Run for Incidence
+run_arima_and_plot(incidence_series, "Incidence", color_historical='green', color_forecast='orange')
+
+
 # In[ ]:
-
-
-
-
