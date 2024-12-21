@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[3]:
+# In[1]:
 
 
 #Downlaod relevant libraries
@@ -20,7 +20,7 @@ get_ipython().system('pip install ruptures')
 import ruptures as rpt
 
 
-# In[4]:
+# In[2]:
 
 
 #Downlaod data set
@@ -31,7 +31,7 @@ print(data.head(10))
 print(data.tail(10))
 
 
-# In[5]:
+# In[3]:
 
 
 #PREPRCOSESSING
@@ -40,28 +40,28 @@ print(data.tail(10))
 print(f'Death : {data.shape}')
 
 
-# In[6]:
+# In[4]:
 
 
 #Check types of the data and values
 print(data.info())
 
 
-# In[7]:
+# In[5]:
 
 
 #Missing values
 print(data.isnull().sum())
 
 
-# In[8]:
+# In[6]:
 
 
 #Summary statistics
 print(data.describe())
 
 
-# In[96]:
+# In[7]:
 
 
 #Identify the outliers
@@ -111,7 +111,7 @@ plt.tight_layout()
 plt.show()
 
 
-# In[9]:
+# In[8]:
 
 
 #Identify the duplicates
@@ -119,7 +119,7 @@ duplicates = data.duplicated().sum()
 print(f'Number of duplicate rows: {duplicates}')
 
 
-# In[10]:
+# In[9]:
 
 
 #Rename the location name and cause name
@@ -129,7 +129,7 @@ data['location_name'] = data['location_name'].replace('United Kingdom of Great B
 print(data['location_name'].unique())
 
 
-# In[11]:
+# In[10]:
 
 
 # Create a mapping dictionary for cancer cause names and their abbreviations
@@ -177,7 +177,7 @@ data['cause_abbreviation'] = data['cause_name'].replace(can_cause_abbreviations)
 print(data[['cause_name', 'cause_abbreviation']].head())
 
 
-# In[12]:
+# In[11]:
 
 
 #EDA
@@ -196,7 +196,7 @@ Age_count = data['age_name'].value_counts().sort_index()
 print(Age_count)
 
 
-# In[13]:
+# In[12]:
 
 
 #DISTRIBUTION OF AGE GROUP AND GENDER BY COUNTRY
@@ -251,7 +251,7 @@ for country in countries:
     plt.show()
 
 
-# In[14]:
+# In[13]:
 
 
 #DISTRIBUTION OF GENDER BY COUNTRY
@@ -304,7 +304,7 @@ for country in countries:
     plt.show()
 
 
-# In[15]:
+# In[14]:
 
 
 #CAUSES OF DEATHS BY COUNTRY
@@ -360,7 +360,7 @@ for country in countries:
     plt.show()
 
 
-# In[16]:
+# In[15]:
 
 
 #CAUSE OF CANSER BY COUNTRY AND GENDER
@@ -415,7 +415,7 @@ for country in countries:
     plt.show()
 
 
-# In[17]:
+# In[16]:
 
 
 #AGE GROUP BY GENDER
@@ -427,7 +427,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[18]:
+# In[17]:
 
 
 #AGE GROUP BY CANCER CAUSE
@@ -439,7 +439,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['cause_abbreviation'])
 print(age_sex_crosstab)
 
 
-# In[19]:
+# In[18]:
 
 
 #AGE GROUP BY MEASURE NAME
@@ -451,7 +451,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['measure_name'])
 print(age_sex_crosstab)
 
 
-# In[20]:
+# In[19]:
 
 
 #AGE GROUP BY COUNTRY
@@ -463,7 +463,7 @@ age_sex_crosstab = pd.crosstab(data['age_name'], data['location_name'])
 print(age_sex_crosstab)
 
 
-# In[21]:
+# In[20]:
 
 
 #AGE GROUP BY CAUSES OF DEATH
@@ -475,7 +475,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
 print(age_sex_crosstab)
 
 
-# In[22]:
+# In[21]:
 
 
 #GENDER BY CAUSES OF DEATH
@@ -487,7 +487,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[23]:
+# In[22]:
 
 
 #GENDER BY COUNTRY
@@ -499,7 +499,7 @@ age_sex_crosstab = pd.crosstab(data['location_name'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[24]:
+# In[23]:
 
 
 #COUNTRY BY CAUSES OF DEATH
@@ -511,7 +511,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['location_name']
 print(age_sex_crosstab)
 
 
-# In[25]:
+# In[24]:
 
 
 #GENDER BY CAUSES OF DEATH
@@ -523,7 +523,7 @@ age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
 print(age_sex_crosstab)
 
 
-# In[26]:
+# In[25]:
 
 
 #TREND BY YEAR AND MEASURE TYPE - GLOBALLY
@@ -538,7 +538,7 @@ plt.legend(title='Measure Type')
 plt.show()
 
 
-# In[27]:
+# In[26]:
 
 
 #TREND BY YEAR AND MEASURE TYPE - GLOBALLY_check clear view
@@ -555,7 +555,7 @@ plt.legend(title='Measure Type')
 plt.show()
 
 
-# In[28]:
+# In[27]:
 
 
 #MOTALITY RATE COMPARISON OVER TIME
@@ -624,7 +624,7 @@ plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize
 plt.show()
 
 
-# In[29]:
+# In[28]:
 
 
 #MOTALITY RATE COMPARISON OVER TIME _ TO TAKE CLEAR VIEW CHINA REMOVED
@@ -693,7 +693,7 @@ plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize
 plt.show()
 
 
-# In[30]:
+# In[29]:
 
 
 #YEARLY TREND FOR EACH CANCER CAUSE
@@ -709,7 +709,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[31]:
+# In[30]:
 
 
 #YEARLY TREND FOR EACH CANCER CAUSE
@@ -725,7 +725,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[32]:
+# In[31]:
 
 
 #EXPLORING DIFFERENCES BY AGE AND YEAR
@@ -741,7 +741,7 @@ plt.legend(title='Age Group', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
 
 
-# In[33]:
+# In[32]:
 
 
 #CORRELATION BETWEEN AGE AND CANCER INCIDENCE #####################
@@ -762,7 +762,7 @@ plt.title('Correlation Between Cancer Incidence Across Years')
 plt.show()
 
 
-# In[34]:
+# In[33]:
 
 
 #MAP THE INCOME LEVEL TO COUNTRY
@@ -789,7 +789,7 @@ data['income_level'] = data['location_name'].map(income_levels)
 print(data)
 
 
-# In[35]:
+# In[34]:
 
 
 #CANCER MORTALITY TREND BY INCOME LEVEL AND YEAR 
@@ -807,7 +807,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[36]:
+# In[35]:
 
 
 #CANCER INCIDENCE TREND BY INCOME LEVEL AND YEAR_Take clear view
@@ -825,7 +825,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[37]:
+# In[36]:
 
 
 #IDENTIFY WHETHER THERE IS ANY RELATIONSHIP BETWEEN DEMOGRAPIC FACTORS
@@ -851,7 +851,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[38]:
+# In[37]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND LOCATION
@@ -875,7 +875,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[39]:
+# In[38]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND AGE
@@ -899,7 +899,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[40]:
+# In[39]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND AGE
@@ -923,7 +923,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[41]:
+# In[40]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
@@ -947,7 +947,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[42]:
+# In[41]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
@@ -971,7 +971,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[43]:
+# In[42]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
@@ -995,7 +995,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[44]:
+# In[43]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
@@ -1019,7 +1019,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[45]:
+# In[44]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND COUNTRY
@@ -1043,7 +1043,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[46]:
+# In[45]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND COUNTRY
@@ -1067,7 +1067,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[47]:
+# In[46]:
 
 
 #EFFECT ON INCOME LEVEL ON CANCER COUNT 
@@ -1091,7 +1091,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_anova(data, measure) 
 
 
-# In[48]:
+# In[47]:
 
 
 #POST-HOC ANALYSIS
@@ -1110,7 +1110,7 @@ data['income_id'] = data['income_level'].replace(income_id)
 print(data)
 
 
-# In[49]:
+# In[48]:
 
 
 #Tukey's HSD post-hoc test
@@ -1143,7 +1143,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_posthoc(data, measure)
 
 
-# In[50]:
+# In[49]:
 
 
 #EFFECT ON AGE ON CANCER COUNT 
@@ -1167,7 +1167,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_anova(data, measure)
 
 
-# In[51]:
+# In[50]:
 
 
 #POST-HOC ANALYSIS
@@ -1193,7 +1193,7 @@ for measure in ["Deaths", "Incidence"]:
     perform_posthoc(data, measure)
 
 
-# In[52]:
+# In[51]:
 
 
 #DICKEY-FULLER TEST
@@ -1215,7 +1215,7 @@ for measure in ["Deaths", "Incidence"]:
   #  print("The time series is stationary (fail to reject null hypothesis).")
 
 
-# In[53]:
+# In[52]:
 
 
 #DICKEY FULLER TEST - DEATHS
@@ -1240,7 +1240,7 @@ else:
     print("The time series is stationary - data has no unit root")
 
 
-# In[54]:
+# In[53]:
 
 
 #DICKEY FULLER TEST - INCIDENCE
@@ -1252,7 +1252,7 @@ deaths_incidence = data[data['measure_name'] == 'Incidence']
 aggregated_incidence = deaths_data.groupby('year')['val'].sum()
 
 #Perform the ADF test 
-adf_result = adfuller(aggregated_deaths)
+adf_result = adfuller(aggregated_incidence)
 
 #Print the results
 print("ADF Statistic:", adf_result[0])
@@ -1265,7 +1265,7 @@ else:
     print("The time series is stationary - data has no unit root")
 
 
-# In[114]:
+# In[54]:
 
 
 import warnings
@@ -1274,7 +1274,7 @@ import warnings
 warnings.simplefilter('ignore', category=UserWarning)
 
 
-# In[116]:
+# In[55]:
 
 
 #TIME SERIES ANALYSIS
@@ -1322,72 +1322,311 @@ def run_arima_and_plot(series, title, color_historical, color_forecast):
 run_arima_and_plot(deaths_series, "Deaths", color_historical='blue', color_forecast='red')
 
 
-# In[124]:
+# In[56]:
 
 
 get_ipython().system('pip install pmdarima')
 
 
-# In[140]:
+# In[57]:
 
 
-#Automatically selects the best ARIMA model
+#Automatically selects the best ARIMA model for Deaths
 
 from pmdarima import auto_arima
 
-#Filtered the death data
+# Filter the death data
+deaths_series_auto = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+deaths_series_auto.set_index('year', inplace=True)
+deaths_series_auto.index = pd.to_datetime(deaths_series_auto.index, format='%Y')
+
+# Auto ARIMA model fitting and summary
+def auto_arima_summary(series, title):
+    # Fit Auto ARIMA model
+    model = auto_arima(series['val'], seasonal=False, stepwise=True, trace=True)
+    
+    # Print model summary
+    print(f"\nAuto ARIMA Model Results for {title}:")
+    print(model.summary())
+    
+    # Forecast the next 10 years
+    forecast = model.predict(n_periods=10)
+    print(f"\nForecasted Values ({title}):")
+    print(forecast)
+
+    # Return model and forecast for further use
+    return model, forecast
+
+# Run the ARIMA summary
+model, forecast = auto_arima_summary(deaths_series_auto, "Deaths")
+
+
+# In[58]:
+
+
+#Original time series to check the spike
+year_2002 = pd.Timestamp('2002')
+
+#Plot the graph
+plt.figure(figsize=(10, 6))
+plt.plot(deaths_series.index, deaths_series['val'], label='Deaths')
+plt.axvline(x=year_2002, color='red', linestyle='--', label='2002 Spike')
+plt.title('Deaths Time Series with Focus on 2002')
+plt.xlabel('Year')
+plt.ylabel('Number of Deaths')
+plt.legend()
+plt.show()
+
+
+#Check 2002 value with 2001 and 2003
+deaths_2002 = deaths_series.loc['2001':'2003'] 
+print(deaths_2002)
+
+
+# In[59]:
+
+
+#Manual Tunning - 1 AUTOMATIC ARIMA MODEL
+
+#Aggregate Deaths by year
+deaths_series = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+
+#Prepare time series for Deaths
+deaths_series.set_index('year', inplace=True)
+deaths_series.index = pd.to_datetime(deaths_series.index, format='%Y')
+
+#Define function
+def run_arima_and_plot(series, title):
+    #Fit ARIMA model
+    model1 = ARIMA(series['val'], order=(1, 2, 0)) 
+    model2 = ARIMA(series['val'], order=(0, 2, 1)) 
+    model3 = ARIMA(series['val'], order=(1, 2, 1)) 
+    model4 = ARIMA(series['val'], order=(0, 1, 0)) 
+    model5 = ARIMA(series['val'], order=(1, 1, 0)) 
+    model6 = ARIMA(series['val'], order=(0, 1, 1)) 
+    result1 = model1.fit()
+    result2 = model2.fit()
+    result3 = model3.fit()
+    result4 = model4.fit()
+    result5 = model5.fit()
+    result6 = model6.fit()
+    
+    #Print results
+    print(f"\nARIMA Model Results for {title}:")
+    print(result1.summary())
+    print(result2.summary())
+    print(result3.summary())
+    print(result4.summary())
+    print(result5.summary())
+    print(result6.summary())
+    
+# Run for Deaths
+run_arima_and_plot(deaths_series, "Deaths")
+
+
+# In[60]:
+
+
+#Check outliers for deaths
+
+#Calculate Z-scores for the data
+deaths_series['z_score'] = (deaths_series['val'] - deaths_series['val'].mean()) / deaths_series['val'].std()
+
+#Check Z-score for 2002
+print(deaths_series.loc['2002', 'z_score'])
+
+
+# In[61]:
+
+
+#CHECK RESIDUAL ARIMA(0,2,0) MODEL
+
+#Fit the model
+final_model = ARIMA(deaths_series_auto['val'], order=(0, 2, 0)).fit()
+
+#Plot residuals
+residuals = final_model.resid
+plt.figure(figsize=(12, 6))
+plt.subplot(2, 1, 1)
+plt.plot(residuals, label="Residuals")
+plt.legend()
+plt.subplot(2, 1, 2)
+sm.qqplot(residuals, line='s', ax=plt.gca())
+plt.show()
+
+#Ljung-Box test
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+lb_test = acorr_ljungbox(residuals, lags=[10], return_df=True)
+print(lb_test)
+
+
+# In[62]:
+
+
+import ruptures as rpt
+
+# Use Pelt search to find change points
+model = "l2"  # Model for change detection
+algo = rpt.Pelt(model=model).fit(deaths_series['val'].values)
+result = algo.predict(pen=10)
+
+# Plot the change points
+rpt.display(deaths_series['val'].values, result)
+plt.show()
+
+
+# In[63]:
+
+
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+# Decompose the time series
+decomposition = seasonal_decompose(deaths_series['val'], model='additive', period=1)  # adjust period if needed
+decomposition.plot()
+plt.show()
+
+
+# In[64]:
+
+
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#TRAINING AND TESTING DATA
+
+#Filter the death data
+deaths_series_auto = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+deaths_series_auto.set_index('year', inplace=True)
+deaths_series_auto.index = pd.to_datetime(deaths_series_auto.index, format='%Y')
+
+#Split data into training and testing
+train_size = int(len(deaths_series_auto) * 0.8)  
+train, test = deaths_series_auto[:train_size], deaths_series_auto[train_size:]
+
+#Fit ARIMA(0,2,0) model on training data
+print("Fitting ARIMA(0,2,0) on training data...\n")
+model = ARIMA(train['val'], order=(0, 2, 0))  # Set ARIMA order explicitly
+model_fit = model.fit()
+
+#Forecast on test set
+n_periods = len(test)  
+forecast = model_fit.forecast(steps=n_periods)
+
+#Plot the results
+plt.figure(figsize=(12, 6))
+plt.plot(train.index, train['val'], label='Training Data')
+plt.plot(test.index, test['val'], label='Testing Data', color='red')
+plt.plot(test.index, forecast, label='Forecast model (ARIMA(0,2,0))', color='green', linestyle='--')
+plt.title("Training vs Testing Data")
+plt.xlabel("Year")
+plt.ylabel("Deaths")
+plt.legend()
+plt.show()
+
+#Calculate RMSE to evaluate forecast performance
+rmse = np.sqrt(mean_squared_error(test['val'], forecast))
+print(f"RMSE value: {rmse:.2f}")
+
+
+# In[173]:
+
+
+#Rolling Forecast
+
+# Prepare the data
+deaths_series_auto = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+deaths_series_auto.set_index('year', inplace=True)
+deaths_series_auto.index = pd.to_datetime(deaths_series_auto.index, format='%Y')
+
+# Initialize the history with the training data
+history = [x for x in train['val']]
+predictions = []
+
+# Rolling forecast
+for t in range(len(test)):
+    # Fit ARIMA model (ARIMA(0,2,0))
+    model = ARIMA(history, order=(0, 2, 0))
+    model_fit = model.fit()
+    
+    #Predict the next value
+    yhat = model_fit.forecast()[0]
+    predictions.append(yhat)
+    
+    #Append the actual value to the history (rolling step)
+    history.append(test['val'].iloc[t])
+
+#Convert predictions to a pandas series for easy plotting and comparison
+predictions_series = pd.Series(predictions, index=test.index)
+
+# Plot the results
+plt.figure(figsize=(12, 6))
+plt.plot(train.index, train['val'], label='Training Data')
+plt.plot(test.index, test['val'], label='Testing Data', color='red')
+plt.plot(predictions_series.index, predictions_series, label='Rolling Forecast (ARIMA(0,2,0))', color='green', linestyle='--')
+plt.title("Rolling Forecast: Training vs Testing Data")
+plt.xlabel("Year")
+plt.ylabel("Deaths")
+plt.legend()
+plt.show()
+
+# Calculate RMSE to evaluate forecast performance
+rmse = np.sqrt(mean_squared_error(test['val'], predictions))
+print(f"RMSE value: {rmse:.2f}")
+
+
+# In[66]:
+
+
+# ARIMA(0,2,0) model forecast for 10 years
+
+# Filtered the death data
 deaths_series = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
 deaths_series.set_index('year', inplace=True)
 deaths_series.index = pd.to_datetime(deaths_series.index, format='%Y')
 
-#Auto ARIMA model selection
+# Define the function
 def run_auto_arima_and_plot(series, title, color_historical, color_forecast):
-    # Fit Auto ARIMA model
-    model = auto_arima(series['val'], seasonal=False, stepwise=True, trace=True)
+    # Fit ARIMA model
+    model = ARIMA(series['val'], order=(0, 2, 0))  
+    result = model.fit()
     
-    #Print model summary
-    print(f"\nAuto ARIMA Model Results for {title}:")
-    print(model.summary())
+    # Forecast the next 10 years
+    forecast = result.forecast(steps=10)
     
-    #Forecast the next 10 years
-    forecast = model.predict(n_periods=10)
-
-    #Print results
-    print(f"\nARIMA Model Results for {title}:")
-    print(result.summary())
-    print(f"Forecasted Values ({title}):")
-    print(forecast)
-    
-    #Plot historical and forecast data
+    # Plot historical and forecasted values
     historical_years = series.index
-    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(1), periods=10, freq='YS')
+    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(1), periods=10, freq='YE')
     historical_values = series['val']
     
     plt.figure(figsize=(12, 6))
     plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
     plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
-    plt.title(f"Time Series Analysis Forecast: Deaths Auto ARIMA Model")
+    plt.title(f"Time Series Forecast: {title} (ARIMA Model)")
     plt.xlabel("Year")
     plt.ylabel(title)
     plt.legend()
     plt.grid()
     plt.show()
 
-#Run Auto ARIMA for Deaths
+# Run Auto ARIMA for Deaths
 run_auto_arima_and_plot(deaths_series, "Deaths", color_historical='blue', color_forecast='red')
 
 
-# In[118]:
+# In[67]:
 
 
-# Aggregate Incidence by year
+#Aggregate Incidence by year
 incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
 
-# Prepare time series for Incidence
+#Prepare time series for Incidence
 incidence_series.set_index('year', inplace=True)
 incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
 
-# Define function
+#Define function
 def run_arima_and_plot(series, title, color_historical, color_forecast):
     # Fit ARIMA model
     model = ARIMA(series['val'], order=(1, 1, 1))  
@@ -1422,17 +1661,19 @@ def run_arima_and_plot(series, title, color_historical, color_forecast):
 run_arima_and_plot(incidence_series, "Incidence", color_historical='green', color_forecast='orange')
 
 
-# In[144]:
+# In[157]:
 
+
+##Automatically selects the best ARIMA model for incidence
 
 from pmdarima import auto_arima
 
 # Aggregate Incidence by year
-incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+incidence_series_auto = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
 
 # Prepare time series for Incidence
-incidence_series.set_index('year', inplace=True)
-incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
+incidence_series_auto.set_index('year', inplace=True)
+incidence_series_auto.index = pd.to_datetime(incidence_series_auto.index, format='%Y')
 
 # Define function for Auto ARIMA and plotting
 def run_auto_arima_and_plot(series, title, color_historical, color_forecast):
@@ -1467,7 +1708,153 @@ def run_auto_arima_and_plot(series, title, color_historical, color_forecast):
     plt.show()
 
 # Run Auto ARIMA for Incidence
-run_auto_arima_and_plot(incidence_series, "Incidence", color_historical='green', color_forecast='orange')
+run_auto_arima_and_plot(incidence_series_auto, "Incidence", color_historical='green', color_forecast='orange')
+
+
+# In[139]:
+
+
+#Manual Tunning - 1 AUTOMATIC ARIMA MODEL
+
+#Aggregate Deaths by year
+incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+
+#Prepare time series for Deaths
+incidence_series.set_index('year', inplace=True)
+incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
+
+#Define function
+def run_arima_and_plot(series, title):
+    #Fit ARIMA model
+    model1 = ARIMA(series['val'], order=(1, 2, 0)) 
+    model2 = ARIMA(series['val'], order=(0, 2, 1)) 
+    model3 = ARIMA(series['val'], order=(1, 2, 1)) 
+    model4 = ARIMA(series['val'], order=(0, 2, 0)) 
+    model5 = ARIMA(series['val'], order=(1, 1, 0)) 
+    model6 = ARIMA(series['val'], order=(0, 1, 1)) 
+    result1 = model1.fit()
+    result2 = model2.fit()
+    result3 = model3.fit()
+    result4 = model4.fit()
+    result5 = model5.fit()
+    result6 = model6.fit()
+    
+    #Print results
+    print(f"\nARIMA Model Results for {title}:")
+    print(result1.summary())
+    print(result2.summary())
+    print(result3.summary())
+    print(result4.summary())
+    print(result5.summary())
+    print(result6.summary())
+    
+# Run for Deaths
+run_arima_and_plot(incidence_series, "Incidence")
+
+
+# In[185]:
+
+
+# Import necessary libraries
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#Training & Testing - Incidence data
+
+# Prepare the data
+incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+incidence_series.set_index('year', inplace=True)
+incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
+
+# Split data into training and testing sets
+train_size = int(len(incidence_series) * 0.8)
+train, test = incidence_series[:train_size], incidence_series[train_size:]
+
+# Fit ARIMA(0,2,0) model on the training data
+print("Fitting ARIMA(0,2,0) on training data...\n")
+model = ARIMA(train['val'], order=(0, 2, 0))  # Set ARIMA order explicitly
+model_fit = model.fit()
+
+# Forecast for the test set
+n_periods = len(test)
+forecast = model_fit.forecast(steps=n_periods)
+
+# Plot the results
+plt.figure(figsize=(12, 6))
+plt.plot(train.index, train['val'], label='Training Data')
+plt.plot(test.index, test['val'], label='Testing Data', color='orange')
+plt.plot(test.index, forecast, label='Forecast Model (ARIMA(0,2,0))', color='green', linestyle='--')
+plt.title("Training vs Testing Data - Incidence")
+plt.xlabel("Year")
+plt.ylabel("Incidence")
+plt.legend()
+plt.show()
+
+# Calculate RMSE to evaluate forecast performance
+rmse = np.sqrt(mean_squared_error(test['val'], forecast))
+print(f"RMSE value: {rmse:.2f}")
+
+
+# In[187]:
+
+
+# Import necessary libraries
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Prepare the data
+incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+incidence_series.set_index('year', inplace=True)
+incidence_series.index = pd.to_datetime(incidence_series.index, format='%Y')
+
+# Split the data into training and testing sets
+train_size = int(len(incidence_series) * 0.8)
+train, test = incidence_series[:train_size], incidence_series[train_size:]
+
+# Rolling Forecast - Incidence
+print("Starting rolling forecast with ARIMA(0,2,0)...\n")
+history = [x for x in train['val']]
+predictions = []
+
+for t in range(len(test)):
+    # Fit ARIMA(0,2,0) model on the history
+    model = ARIMA(history, order=(0, 2, 0))
+    model_fit = model.fit()
+    
+    # Predict the next value
+    yhat = model_fit.forecast()[0]
+    predictions.append(yhat)
+    
+    # Append the actual value from the test set to the history
+    history.append(test['val'].iloc[t])
+
+# Convert predictions to a pandas series for easier plotting
+predictions_series = pd.Series(predictions, index=test.index)
+
+# Plot the results
+plt.figure(figsize=(12, 6))
+plt.plot(train.index, train['val'], label='Training Data')
+plt.plot(test.index, test['val'], label='Testing Data', color='orange')
+plt.plot(predictions_series.index, predictions_series, label='Rolling Forecast (ARIMA(0,2,0))', color='green', linestyle='--')
+plt.title("Rolling Forecast: Training vs Testing Data - Incidence")
+plt.xlabel("Year")
+plt.ylabel("Incidence")
+plt.legend()
+plt.show()
+
+# Calculate RMSE to evaluate the forecast performance
+rmse = np.sqrt(mean_squared_error(test['val'], predictions))
+print(f"RMSE value: {rmse:.2f}")
 
 
 # In[ ]:
+
+
+
+
