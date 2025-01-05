@@ -18,7 +18,6 @@ from sklearn.metrics import mean_squared_error
 from statsmodels.tsa.stattools import adfuller
 get_ipython().system('pip install ruptures')
 import ruptures as rpt
-from statsmodels.tsa.arima.model import ARIMA
 from pmdarima import auto_arima
 
 
