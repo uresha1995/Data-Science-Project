@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 #Downlaod relevant libraries
@@ -18,9 +18,10 @@ from sklearn.metrics import mean_squared_error
 from statsmodels.tsa.stattools import adfuller
 get_ipython().system('pip install ruptures')
 import ruptures as rpt
+from statsmodels.tsa.arima.model import ARIMA
 
 
-# In[2]:
+# In[4]:
 
 
 #Downlaod data set
@@ -31,37 +32,37 @@ print(data.head(10))
 print(data.tail(10))
 
 
-# In[3]:
+# In[5]:
 
 
-#PREPRCOSESSING
+#PREPRCOSESSING AND EDA
 
 #Shape of the dataset
 print(f'Death : {data.shape}')
 
 
-# In[4]:
+# In[6]:
 
 
 #Check types of the data and values
 print(data.info())
 
 
-# In[5]:
+# In[7]:
 
 
 #Missing values
 print(data.isnull().sum())
 
 
-# In[6]:
+# In[8]:
 
 
 #Summary statistics
 print(data.describe())
 
 
-# In[7]:
+# In[9]:
 
 
 #Identify the outliers
@@ -111,7 +112,7 @@ plt.tight_layout()
 plt.show()
 
 
-# In[8]:
+# In[10]:
 
 
 #Identify the duplicates
@@ -119,20 +120,30 @@ duplicates = data.duplicated().sum()
 print(f'Number of duplicate rows: {duplicates}')
 
 
-# In[9]:
+# In[11]:
 
 
-#Rename the location name and cause name
+#Check the country names
+print(data['location_name'].unique())
+
+#Rename the country 
 data['location_name'] = data['location_name'].replace('United Kingdom of Great Britain and Northern Ireland', 'United Kingdom')
 
-#Print the list of location to verify
+#Print the list of country to verify
 print(data['location_name'].unique())
 
 
-# In[10]:
+# In[12]:
 
 
-# Create a mapping dictionary for cancer cause names and their abbreviations
+#Convert 'age_name' to categorical and sort to order
+data['age_name'] = pd.Categorical(data['age_name'], categories = sorted(data['age_name'].unique()), ordered = True)
+
+
+# In[13]:
+
+
+# Create a mapping dictionary for cancer cause and their abbreviations
 can_cause_abbreviations = {
     "Bladder cancer": "BC",
     "Brain and central nervous system cancer": "BCNS",
@@ -177,32 +188,129 @@ data['cause_abbreviation'] = data['cause_name'].replace(can_cause_abbreviations)
 print(data[['cause_name', 'cause_abbreviation']].head())
 
 
-# In[11]:
+# In[14]:
 
 
-#EDA
+#MAP THE INCOME LEVEL TO COUNTRY
 
-#COUNTRY WISE TOTAL COUNT 
+income_levels = {
+    'South Africa': 'Upper Middle-Income',
+    'Nigeria': 'Lower Middle-Income',
+    'China': 'Upper Middle-Income',
+    'India': 'Lower Middle-Income',
+    'Japan': 'High-Income',
+    'France': 'High-Income',
+    'Poland': 'Upper Middle-Income',
+    'United Kingdom': 'High-Income',
+    'United States of America': 'High-Income',
+    'Mexico': 'Upper Middle-Income',
+    'Brazil': 'Upper Middle-Income',
+    'Australia': 'High-Income'
+}
+
+#Create a new column 
+data['income_level'] = data['location_name'].map(income_levels)
+
+#Print data
+print(data)
+
+
+# In[15]:
+
+
+#RECODE INCOME LEVEL
+
+#Recoding dictionary
+income_id = {
+    'Upper Middle-Income': 1,
+    'Lower Middle-Income': 2,
+    'High-Income': 3
+}
+
+#Recode the income_level in new column
+data['income_id'] = data['income_level'].replace(income_id)
+
+#Display the updated DataFrame
+print(data)
+
+
+# In[16]:
+
+
+#Countrywise total count 
 
 #Number of entries for each country
 Country_count = data['location_name'].value_counts()
 print(Country_count)
 
-
-#AGE WISE TOTAL COUNT 
+# Age-wise total count
 
 #Number of entries for each age group
 Age_count = data['age_name'].value_counts().sort_index()
 print(Age_count)
 
+# Gender-wise total count
 
-# In[12]:
+#Number of entries for each gender
+Gender_count = data['sex_name'].value_counts().sort_index()
+print(Gender_count)
+
+#Cause of cancer total count
+
+#Number of entries for each cancer cause
+Cancer_count = data['cause_name'].value_counts().sort_index()
+print(Cancer_count)
+
+
+# In[17]:
+
+
+#DISTRIBUTION OF AGE GROUP AND GENDER - GLOBAL
+
+# Aggregate data at the world level
+world_data = data.groupby(['age_name', 'sex_name', 'measure_name'], observed=True, as_index=False)['val'].sum()
+
+# Define color palettes for 'Deaths' and 'Incidence'
+palette_deaths = sns.color_palette("Set1", n_colors=2)
+palette_incidence = sns.color_palette("Set1", n_colors=2)
+
+# Create a new figure
+plt.figure(figsize=(10, 10))
+
+# Initialize a counter for subplots
+subplot_index = 1
+
+# Plot 'Deaths' and 'Incidence' at the world level
+for measure in ['Deaths', 'Incidence']:
+    # Filter data for the current measure
+    measure_data = world_data[world_data['measure_name'] == measure]
+    
+    # Choose the palette based on the measure
+    palette = palette_deaths if measure == 'Deaths' else palette_incidence
+
+    # Create a subplot
+    plt.subplot(2, 1, subplot_index)
+    
+    # Create line plot for the measure
+    sns.lineplot(x='age_name', y='val', hue='sex_name', data=measure_data, palette=palette, marker='o', errorbar=('ci', 50))
+    
+    # Add labels, titles, and font sizes
+    plt.title(f'Global - {measure.capitalize()} by Age and Gender', fontsize=14)
+    plt.xlabel('Age Group', fontsize=10)
+    plt.ylabel('Count', fontsize=10)
+    plt.xticks(rotation=45, fontsize=10)
+    
+    subplot_index += 1
+
+# Adjust layout and show the plot
+plt.tight_layout()
+plt.show()
+
+
+# In[18]:
 
 
 #DISTRIBUTION OF AGE GROUP AND GENDER BY COUNTRY
-
-#Convert 'age_name' to categorical and sort to order
-data['age_name'] = pd.Categorical(data['age_name'], categories = sorted(data['age_name'].unique()), ordered = True)
 
 #Retrieve the top 12 countries
 countries = data['location_name'].value_counts().index[:12]
@@ -251,7 +359,7 @@ for country in countries:
     plt.show()
 
 
-# In[13]:
+# In[19]:
 
 
 #DISTRIBUTION OF GENDER BY COUNTRY
@@ -304,7 +412,7 @@ for country in countries:
     plt.show()
 
 
-# In[14]:
+# In[20]:
 
 
 #CAUSES OF DEATHS BY COUNTRY
@@ -360,13 +468,60 @@ for country in countries:
     plt.show()
 
 
-# In[15]:
+# In[21]:
+
+
+#CAUSE OF CANSER BY GENDER - GlOBAL
+
+# Define color palettes for 'Deaths' and 'Incidence'
+palette_deaths = sns.color_palette("dark", n_colors=2)
+palette_incidence = sns.color_palette("viridis", n_colors=2)
+
+# Aggregate data globally
+global_data = data.groupby(['cause_abbreviation', 'measure_name', 'sex_name'], as_index=False)['val'].sum()
+
+# Initialize a counter for subplots
+plt.figure(figsize=(10, 12))
+
+# Separate 'Deaths' and 'Incidence'
+for i, measure in enumerate(['Deaths', 'Incidence']):
+    measure_data = global_data[global_data['measure_name'] == measure]
+
+    # Choose the palette based on the measure
+    if measure == 'Deaths':
+        palette = palette_deaths
+    else:
+        palette = palette_incidence
+
+    # Create a subplot
+    plt.subplot(2, 1, i + 1)
+
+    # Create line plot for each measure with the chosen palette
+    sns.lineplot(
+        x='cause_abbreviation', 
+        y='val', 
+        hue='sex_name', 
+        data=measure_data, 
+        palette=palette, 
+        marker='o', 
+        errorbar=('ci', 50)
+    )
+
+    # Add labels, titles, and font sizes
+    plt.title(f'Global - {measure.capitalize()} Distribution of Cancer Causes', fontsize=14)
+    plt.xlabel('Cancer Cause', fontsize=10)
+    plt.ylabel('Count', fontsize=10)
+    plt.xticks(rotation=45, fontsize=10)
+
+# Adjust layout and show the plot
+plt.tight_layout()
+plt.show()
+
+
+# In[22]:
 
 
 #CAUSE OF CANSER BY COUNTRY AND GENDER
-    
-#Convert 'age_name' to categorical and sort to order
-data['age_name'] = pd.Categorical(data['age_name'], categories = sorted(data['age_name'].unique()), ordered = True)
 
 #Retrieve the top 12 countries
 countries = data['location_name'].value_counts().index[:12]
@@ -415,115 +570,7 @@ for country in countries:
     plt.show()
 
 
-# In[16]:
-
-
-#AGE GROUP BY GENDER
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['age_name'], data['sex_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[17]:
-
-
-#AGE GROUP BY CANCER CAUSE
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['age_name'], data['cause_abbreviation'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[18]:
-
-
-#AGE GROUP BY MEASURE NAME
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['age_name'], data['measure_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[19]:
-
-
-#AGE GROUP BY COUNTRY
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['age_name'], data['location_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[20]:
-
-
-#AGE GROUP BY CAUSES OF DEATH
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[21]:
-
-
-#GENDER BY CAUSES OF DEATH
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[22]:
-
-
-#GENDER BY COUNTRY
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['location_name'], data['sex_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
 # In[23]:
-
-
-#COUNTRY BY CAUSES OF DEATH
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['location_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[24]:
-
-
-#GENDER BY CAUSES OF DEATH
-
-#Create a cross-tabulation of age by sex
-age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
-
-#Print the table
-print(age_sex_crosstab)
-
-
-# In[25]:
 
 
 #TREND BY YEAR AND MEASURE TYPE - GLOBALLY
@@ -538,7 +585,7 @@ plt.legend(title='Measure Type')
 plt.show()
 
 
-# In[26]:
+# In[24]:
 
 
 #TREND BY YEAR AND MEASURE TYPE - GLOBALLY_check clear view
@@ -555,10 +602,10 @@ plt.legend(title='Measure Type')
 plt.show()
 
 
-# In[27]:
+# In[25]:
 
 
-#MOTALITY RATE COMPARISON OVER TIME
+#MOTALITY RATE COMPARISON BY COUNTRY OVER TIME
 
 #Dictionary to map each country to a specific marker
 markers = {
@@ -624,10 +671,10 @@ plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize
 plt.show()
 
 
-# In[28]:
+# In[26]:
 
 
-#MOTALITY RATE COMPARISON OVER TIME _ TO TAKE CLEAR VIEW CHINA REMOVED
+#MOTALITY RATE COMPARISON BY COUNTRY OVER TIME _ TO TAKE CLEAR VIEW CHINA REMOVED
 
 #Dictionary to map each country to a specific marker
 markers = {
@@ -693,7 +740,7 @@ plt.legend(title='Country', bbox_to_anchor=(1.05, 1), loc='upper left', fontsize
 plt.show()
 
 
-# In[29]:
+# In[27]:
 
 
 #YEARLY TREND FOR EACH CANCER CAUSE
@@ -709,7 +756,7 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[30]:
+# In[28]:
 
 
 #YEARLY TREND FOR EACH CANCER CAUSE
@@ -725,10 +772,10 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[31]:
+# In[29]:
 
 
-#EXPLORING DIFFERENCES BY AGE AND YEAR
+#EXPLORING THE TREND OF AGE OVER YEARS
 
 #Plot cancer cases by age group over the years
 plt.figure(figsize=(14, 8))
@@ -741,55 +788,7 @@ plt.legend(title='Age Group', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
 
 
-# In[32]:
-
-
-#CORRELATION BETWEEN AGE AND CANCER INCIDENCE #####################
-
-#Filter data for incidence only
-incidence_data = data[data['measure_name'] == 'Incidence']
-
-#Creating pivot table for incidence data
-correlation_data_incidence = incidence_data.pivot_table(values='val', index='age_name', columns='year', aggfunc='sum', observed='True')
-
-#Calculating correlation matrix for incidence data
-correlation_matrix_incidence = correlation_data_incidence.corr()
-
-#Plot the heatmap 
-plt.figure(figsize=(10, 8))
-sns.heatmap(correlation_matrix_incidence, annot=True, cmap='coolwarm', cbar_kws={'label': 'Correlation'}, annot_kws={"fontsize": 8})
-plt.title('Correlation Between Cancer Incidence Across Years')
-plt.show()
-
-
-# In[33]:
-
-
-#MAP THE INCOME LEVEL TO COUNTRY
-
-income_levels = {
-    'South Africa': 'Upper Middle-Income',
-    'Nigeria': 'Lower Middle-Income',
-    'China': 'Upper Middle-Income',
-    'India': 'Lower Middle-Income',
-    'Japan': 'High-Income',
-    'France': 'High-Income',
-    'Poland': 'Upper Middle-Income',
-    'United Kingdom': 'High-Income',
-    'United States of America': 'High-Income',
-    'Mexico': 'Upper Middle-Income',
-    'Brazil': 'Upper Middl-Income',
-    'Australia': 'High-Income'
-}
-
-#Create a new column 
-data['income_level'] = data['location_name'].map(income_levels)
-
-#Print data
-print(data)
-
-
-# In[34]:
+# In[30]:
 
 
 #CANCER MORTALITY TREND BY INCOME LEVEL AND YEAR 
@@ -807,10 +806,10 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-# In[35]:
+# In[31]:
 
 
-#CANCER INCIDENCE TREND BY INCOME LEVEL AND YEAR_Take clear view
+#CANCER INCIDENCE TREND BY INCOME LEVEL 
 
 filtered_data = data[data['measure_name'].isin(['Incidence'])]
 
@@ -825,58 +824,118 @@ plt.xticks(rotation=45)
 plt.show()
 
 
+# In[32]:
+
+
+#AGE GROUP BY GENDER
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['sex_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
+# In[33]:
+
+
+#AGE GROUP BY CANCER CAUSE
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['cause_abbreviation'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
+# In[34]:
+
+
+#AGE GROUP BY MEASURE NAME
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['measure_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
+# In[35]:
+
+
+#AGE GROUP BY COUNTRY
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['age_name'], data['location_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
 # In[36]:
 
 
-#IDENTIFY WHETHER THERE IS ANY RELATIONSHIP BETWEEN DEMOGRAPIC FACTORS
+#AGE GROUP BY CAUSES OF DEATH
 
-#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND LOCATION
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['age_name'])
 
-#Filter data for "Deaths"
-deaths_data = data[data['measure_name'] == 'Deaths']
-
-#Creating a contingency table for Deaths
-contingency_table_deaths = pd.crosstab(deaths_data['sex_name'], deaths_data['location_name'])
-print("\nContingency Table for Deaths:")
-print(contingency_table_deaths)
-
-#Chi-square test 
-chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
-
-# Print results for Deaths
-print("\nResults for Deaths - - Gender & Country")
-print(f"Chi-square Statistic: {chi2_deaths}")
-print(f"P-value: {p_deaths}")
-print(f"Degrees of Freedom: {dof_deaths}")
-print("Expected Frequencies:\n", expected_deaths)
+#Print the table
+print(age_sex_crosstab)
 
 
 # In[37]:
 
 
-#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND LOCATION
+#GENDER BY CAUSES OF DEATH
 
-#Filter data for "Incidence"
-incidence_data = data[data['measure_name'] == 'Incidence']
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
 
-# Create a contingency table for Incidence
-contingency_table_incidence = pd.crosstab(incidence_data['sex_name'], incidence_data['location_name'])
-print("\nContingency Table for Incidence:")
-print(contingency_table_incidence)
-
-#Chi-square test for Incidence
-chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
-
-# Print results
-print("\nResults for Incidence - Gender & Country")
-print(f"Chi-square Statistic: {chi2_incidence}")
-print(f"P-value: {p_incidence}")
-print(f"Degrees of Freedom: {dof_incidence}")
-print("Expected Frequencies:\n", expected_incidence)
+#Print the table
+print(age_sex_crosstab)
 
 
 # In[38]:
 
+
+#GENDER BY COUNTRY
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['location_name'], data['sex_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
+# In[39]:
+
+
+#COUNTRY BY CAUSES OF DEATH
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['location_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
+# In[40]:
+
+
+#GENDER BY CAUSES OF DEATH
+
+#Create a cross-tabulation of age by sex
+age_sex_crosstab = pd.crosstab(data['cause_abbreviation'], data['sex_name'])
+
+#Print the table
+print(age_sex_crosstab)
+
+
+# In[41]:
+
+
+#IDENTIFY WHETHER THERE IS ANY RELATIONSHIP BETWEEN DEMOGRAPHIC FACTORS
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND AGE
 
@@ -899,7 +958,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[39]:
+# In[42]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND AGE
@@ -923,7 +982,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[40]:
+# In[43]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
@@ -947,7 +1006,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[41]:
+# In[44]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN GENDER AND INCOME LEVEL OF COUNTRY
@@ -971,7 +1030,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[42]:
+# In[45]:
 
 
 #FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
@@ -995,7 +1054,7 @@ print(f"Degrees of Freedom: {dof_deaths}")
 print("Expected Frequencies:\n", expected_deaths)
 
 
-# In[43]:
+# In[46]:
 
 
 #FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND INCOME LEVEL OF COUNTRY
@@ -1019,55 +1078,7 @@ print(f"Degrees of Freedom: {dof_incidence}")
 print("Expected Frequencies:\n", expected_incidence)
 
 
-# In[44]:
-
-
-#FIND THE CANCER MORTALITY - RELATIONSHIP BETWEEN AGE AND COUNTRY
-
-#Filter data for "Deaths"
-deaths_data = data[data['measure_name'] == 'Deaths']
-
-#Creating a contingency table for Deaths
-contingency_table_deaths = pd.crosstab(deaths_data['age_name'], deaths_data['location_name'])
-print("\nContingency Table for Deaths:")
-print(contingency_table_deaths)
-
-#Chi-square test 
-chi2_deaths, p_deaths, dof_deaths, expected_deaths = stats.chi2_contingency(contingency_table_deaths)
-
-#Print results
-print("\nResults for Deaths - Age & Country")
-print(f"Chi-square Statistic: {chi2_deaths}")
-print(f"P-value: {p_deaths}")
-print(f"Degrees of Freedom: {dof_deaths}")
-print("Expected Frequencies:\n", expected_deaths)
-
-
-# In[45]:
-
-
-#FIND THE CANCER INCIDENCE - RELATIONSHIP BETWEEN AGE AND COUNTRY
-
-#Filter data for "Incidence"
-incidence_data = data[data['measure_name'] == 'Incidence']
-
-#Create a contingency table 
-contingency_table_incidence = pd.crosstab(incidence_data['age_name'], incidence_data['location_name'])
-print("\nContingency Table for Incidence:")
-print(contingency_table_incidence)
-
-#Chi-square test
-chi2_incidence, p_incidence, dof_incidence, expected_incidence = stats.chi2_contingency(contingency_table_incidence)
-
-#Print results 
-print("\nResults for Incidence - Age & Country")
-print(f"Chi-square Statistic: {chi2_incidence}")
-print(f"P-value: {p_incidence}")
-print(f"Degrees of Freedom: {dof_incidence}")
-print("Expected Frequencies:\n", expected_incidence)
-
-
-# In[46]:
+# In[47]:
 
 
 #EFFECT ON INCOME LEVEL ON CANCER COUNT 
@@ -1089,25 +1100,6 @@ def perform_anova(data, measure_name):
 #ANOVA for both Deaths and Incidence
 for measure in ["Deaths", "Incidence"]:
     perform_anova(data, measure) 
-
-
-# In[47]:
-
-
-#POST-HOC ANALYSIS
-
-#Recoding dictionary
-income_id = {
-    'Upper Middle-Income': 1,
-    'Lower Middle-Income': 2,
-    'High-Income': 3
-}
-
-#Recode the income_level in new column
-data['income_id'] = data['income_level'].replace(income_id)
-
-#Display the updated DataFrame
-print(data)
 
 
 # In[48]:
@@ -1196,28 +1188,6 @@ for measure in ["Deaths", "Incidence"]:
 # In[51]:
 
 
-#DICKEY-FULLER TEST
-
-#Reduce dataset size for the test
-#subset = data['val'].iloc[:10000] 
-
-#Perform ADF test
-#adf_result = adfuller(subset)
-
-#Extract and interpret results
-#print("ADF Statistic:", adf_result[0])
-#print("p-value:", adf_result[1])
-#print("Critical Values:", adf_result[4])
-
-#if adf_result[1] < 0.05:
- #   print("The time series is non stationary (reject null hypothesis).")
-#else:
-  #  print("The time series is stationary (fail to reject null hypothesis).")
-
-
-# In[52]:
-
-
 #DICKEY FULLER TEST - DEATHS
 
 #Filter the data for 'Deaths'
@@ -1240,16 +1210,16 @@ else:
     print("The time series is stationary - data has no unit root")
 
 
-# In[53]:
+# In[52]:
 
 
 #DICKEY FULLER TEST - INCIDENCE
 
 #Filter the data for 'Deaths'
-deaths_incidence = data[data['measure_name'] == 'Incidence']
+incidence_data = data[data['measure_name'] == 'Incidence']
 
 #Aggregate the data by year
-aggregated_incidence = deaths_data.groupby('year')['val'].sum()
+aggregated_incidence = incidence_data.groupby('year')['val'].sum()
 
 #Perform the ADF test 
 adf_result = adfuller(aggregated_incidence)
@@ -1265,7 +1235,7 @@ else:
     print("The time series is stationary - data has no unit root")
 
 
-# In[54]:
+# In[53]:
 
 
 import warnings
@@ -1274,7 +1244,7 @@ import warnings
 warnings.simplefilter('ignore', category=UserWarning)
 
 
-# In[55]:
+# In[54]:
 
 
 #TIME SERIES ANALYSIS
@@ -1311,7 +1281,7 @@ def run_arima_and_plot(series, title, color_historical, color_forecast):
     plt.figure(figsize=(12, 6))
     plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
     plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
-    plt.title(f"Time Series Analysis Forecast: Deaths ARIMA Model")
+    plt.title(f"Time Series Analysis Forecast: Deaths ARIMA(1, 1, 1)")
     plt.xlabel("Year")
     plt.ylabel(title)
     plt.legend()
@@ -1322,13 +1292,13 @@ def run_arima_and_plot(series, title, color_historical, color_forecast):
 run_arima_and_plot(deaths_series, "Deaths", color_historical='blue', color_forecast='red')
 
 
-# In[56]:
+# In[55]:
 
 
 get_ipython().system('pip install pmdarima')
 
 
-# In[57]:
+# In[56]:
 
 
 #Automatically selects the best ARIMA model for Deaths
@@ -1361,7 +1331,7 @@ def auto_arima_summary(series, title):
 model, forecast = auto_arima_summary(deaths_series_auto, "Deaths")
 
 
-# In[58]:
+# In[57]:
 
 
 #Original time series to check the spike
@@ -1383,7 +1353,7 @@ deaths_2002 = deaths_series.loc['2001':'2003']
 print(deaths_2002)
 
 
-# In[59]:
+# In[58]:
 
 
 #Manual Tunning - 1 AUTOMATIC ARIMA MODEL
@@ -1424,7 +1394,7 @@ def run_arima_and_plot(series, title):
 run_arima_and_plot(deaths_series, "Deaths")
 
 
-# In[60]:
+# In[59]:
 
 
 #Check outliers for deaths
@@ -1436,7 +1406,7 @@ deaths_series['z_score'] = (deaths_series['val'] - deaths_series['val'].mean()) 
 print(deaths_series.loc['2002', 'z_score'])
 
 
-# In[61]:
+# In[60]:
 
 
 #CHECK RESIDUAL ARIMA(0,2,0) MODEL
@@ -1461,40 +1431,46 @@ lb_test = acorr_ljungbox(residuals, lags=[10], return_df=True)
 print(lb_test)
 
 
+# In[61]:
+
+
+# ARIMA(0,2,0) model forecast for 10 years
+
+# Filtered the death data
+deaths_series = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
+deaths_series.set_index('year', inplace=True)
+deaths_series.index = pd.to_datetime(deaths_series.index, format='%Y')
+
+# Define the function
+def run_auto_arima_and_plot(series, title, color_historical, color_forecast):
+    # Fit ARIMA model
+    model = ARIMA(series['val'], order=(0, 2, 0))  
+    result = model.fit()
+    
+    # Forecast the next 10 years
+    forecast = result.forecast(steps=10)
+    
+    # Plot historical and forecasted values
+    historical_years = series.index
+    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(1), periods=10, freq='YE')
+    historical_values = series['val']
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
+    plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
+    plt.title(f"Time Series Forecast Deaths ARIMA(0, 2, 0)")
+    plt.xlabel("Year")
+    plt.ylabel(title)
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+# Run Auto ARIMA for Deaths
+run_auto_arima_and_plot(deaths_series, "Deaths", color_historical='blue', color_forecast='red')
+
+
 # In[62]:
 
-
-import ruptures as rpt
-
-# Use Pelt search to find change points
-model = "l2"  # Model for change detection
-algo = rpt.Pelt(model=model).fit(deaths_series['val'].values)
-result = algo.predict(pen=10)
-
-# Plot the change points
-rpt.display(deaths_series['val'].values, result)
-plt.show()
-
-
-# In[63]:
-
-
-from statsmodels.tsa.seasonal import seasonal_decompose
-
-# Decompose the time series
-decomposition = seasonal_decompose(deaths_series['val'], model='additive', period=1)  # adjust period if needed
-decomposition.plot()
-plt.show()
-
-
-# In[64]:
-
-
-from statsmodels.tsa.arima.model import ARIMA
-from sklearn.metrics import mean_squared_error
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 #TRAINING AND TESTING DATA
 
@@ -1509,7 +1485,7 @@ train, test = deaths_series_auto[:train_size], deaths_series_auto[train_size:]
 
 #Fit ARIMA(0,2,0) model on training data
 print("Fitting ARIMA(0,2,0) on training data...\n")
-model = ARIMA(train['val'], order=(0, 2, 0))  # Set ARIMA order explicitly
+model = ARIMA(train['val'], order=(0, 2, 0))  
 model_fit = model.fit()
 
 #Forecast on test set
@@ -1532,7 +1508,7 @@ rmse = np.sqrt(mean_squared_error(test['val'], forecast))
 print(f"RMSE value: {rmse:.2f}")
 
 
-# In[173]:
+# In[63]:
 
 
 #Rolling Forecast
@@ -1578,46 +1554,10 @@ rmse = np.sqrt(mean_squared_error(test['val'], predictions))
 print(f"RMSE value: {rmse:.2f}")
 
 
-# In[66]:
+# In[64]:
 
 
-# ARIMA(0,2,0) model forecast for 10 years
-
-# Filtered the death data
-deaths_series = data[data['measure_name'] == 'Deaths'].groupby('year')['val'].sum().reset_index()
-deaths_series.set_index('year', inplace=True)
-deaths_series.index = pd.to_datetime(deaths_series.index, format='%Y')
-
-# Define the function
-def run_auto_arima_and_plot(series, title, color_historical, color_forecast):
-    # Fit ARIMA model
-    model = ARIMA(series['val'], order=(0, 2, 0))  
-    result = model.fit()
-    
-    # Forecast the next 10 years
-    forecast = result.forecast(steps=10)
-    
-    # Plot historical and forecasted values
-    historical_years = series.index
-    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(1), periods=10, freq='YE')
-    historical_values = series['val']
-    
-    plt.figure(figsize=(12, 6))
-    plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
-    plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
-    plt.title(f"Time Series Forecast: {title} (ARIMA Model)")
-    plt.xlabel("Year")
-    plt.ylabel(title)
-    plt.legend()
-    plt.grid()
-    plt.show()
-
-# Run Auto ARIMA for Deaths
-run_auto_arima_and_plot(deaths_series, "Deaths", color_historical='blue', color_forecast='red')
-
-
-# In[67]:
-
+#ARIMA MODEL FOR INCIDENCE DATA
 
 #Aggregate Incidence by year
 incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
@@ -1661,17 +1601,15 @@ def run_arima_and_plot(series, title, color_historical, color_forecast):
 run_arima_and_plot(incidence_series, "Incidence", color_historical='green', color_forecast='orange')
 
 
-# In[157]:
+# In[138]:
 
 
-##Automatically selects the best ARIMA model for incidence
+#Automatically selects the best ARIMA model for incidence
 
 from pmdarima import auto_arima
 
 # Aggregate Incidence by year
 incidence_series_auto = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
-
-# Prepare time series for Incidence
 incidence_series_auto.set_index('year', inplace=True)
 incidence_series_auto.index = pd.to_datetime(incidence_series_auto.index, format='%Y')
 
@@ -1686,32 +1624,15 @@ def run_auto_arima_and_plot(series, title, color_historical, color_forecast):
     
     # Forecast the next 10 years
     forecast = model.predict(n_periods=10)
-
-    # Print forecast results
-    print(f"\nARIMA Model Results for {title}:")
-    print(f"Forecasted Values ({title}):")
-    print(forecast)
     
-    # Plot historical and forecast data
-    historical_years = series.index
-    forecast_years = pd.date_range(start=historical_years[-1] + pd.offsets.YearEnd(1), periods=10, freq='YS')
-    historical_values = series['val']
-    
-    plt.figure(figsize=(12, 6))
-    plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
-    plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
-    plt.title(f"Time Series Analysis Forecast: {title} Auto ARIMA Model")
-    plt.xlabel("Year")
-    plt.ylabel(title)
-    plt.legend()
-    plt.grid()
-    plt.show()
+    # Return model and forecast for further use
+    return model, forecast
 
 # Run Auto ARIMA for Incidence
 run_auto_arima_and_plot(incidence_series_auto, "Incidence", color_historical='green', color_forecast='orange')
 
 
-# In[139]:
+# In[66]:
 
 
 #Manual Tunning - 1 AUTOMATIC ARIMA MODEL
@@ -1752,8 +1673,61 @@ def run_arima_and_plot(series, title):
 run_arima_and_plot(incidence_series, "Incidence")
 
 
-# In[185]:
+# In[69]:
 
+
+#FORECAST DATA FOR NEXT TWO YEARS
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima.model import ARIMA
+
+# Aggregate Incidence by year
+incidence_series_manual = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
+
+# Prepare time series for Incidence
+incidence_series_manual.set_index('year', inplace=True)
+incidence_series_manual.index = pd.to_datetime(incidence_series_manual.index, format='%Y')
+
+# Fit ARIMA(0,2,0) model
+arima_020_model = ARIMA(incidence_series_manual['val'], order=(0, 2, 0)).fit()
+
+# Updated plot_forecast function
+def plot_forecast(series, model, title, color_historical, color_forecast):
+    # Forecast the next 10 years
+    forecast = model.forecast(steps=10)
+    
+    # Prepare forecasted years
+    forecast_years = pd.date_range(start=series.index[-1] + pd.offsets.YearEnd(1), periods=10, freq='YS')
+    forecast.index = forecast_years  # Assign forecasted years to the index
+    
+    # Print forecast results
+    print(f"\nForecasted Values ({title}):")
+    print(forecast)
+    
+    # Prepare data for plotting
+    historical_years = series.index
+    historical_values = series['val']
+    
+    # Plot historical and forecast data
+    plt.figure(figsize=(12, 6))
+    plt.plot(historical_years, historical_values, label=f"Historical {title}", color=color_historical)
+    plt.plot(forecast_years, forecast, label=f"Forecasted {title}", color=color_forecast, linestyle='--')
+    plt.title(f"Time Series Forecast ARIMA(0,2,0)")
+    plt.xlabel("Year")
+    plt.ylabel(title)
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+# Generate forecast plot for Incidence using ARIMA(0,2,0)
+plot_forecast(incidence_series_manual, arima_020_model, "Incidence", color_historical='green', color_forecast='orange')
+
+
+# In[67]:
+
+
+#Training & Testing - Incidence data
 
 # Import necessary libraries
 from statsmodels.tsa.arima.model import ARIMA
@@ -1762,7 +1736,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#Training & Testing - Incidence data
+
 
 # Prepare the data
 incidence_series = data[data['measure_name'] == 'Incidence'].groupby('year')['val'].sum().reset_index()
@@ -1798,8 +1772,10 @@ rmse = np.sqrt(mean_squared_error(test['val'], forecast))
 print(f"RMSE value: {rmse:.2f}")
 
 
-# In[187]:
+# In[168]:
 
+
+#ROLLING FORECAST - INCIDENCE DATA
 
 # Import necessary libraries
 from statsmodels.tsa.arima.model import ARIMA
@@ -1851,10 +1827,3 @@ plt.show()
 # Calculate RMSE to evaluate the forecast performance
 rmse = np.sqrt(mean_squared_error(test['val'], predictions))
 print(f"RMSE value: {rmse:.2f}")
-
-
-# In[ ]:
-
-
-
-
