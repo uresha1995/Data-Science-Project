@@ -19,6 +19,7 @@ from statsmodels.tsa.stattools import adfuller
 get_ipython().system('pip install ruptures')
 import ruptures as rpt
 from pmdarima import auto_arima
+from statsmodels.stats.diagnostic import acorr_ljungbox
 
 
 # In[4]:
@@ -1423,8 +1424,6 @@ sm.qqplot(residuals, line='s', ax=plt.gca())
 plt.show()
 
 #Ljung-Box test
-from statsmodels.stats.diagnostic import acorr_ljungbox
-
 lb_test = acorr_ljungbox(residuals, lags=[10], return_df=True)
 print(lb_test)
 
@@ -1691,7 +1690,7 @@ def plot_forecast(series, model, title, color_historical, color_forecast):
     
     # Prepare forecasted years
     forecast_years = pd.date_range(start=series.index[-1] + pd.offsets.YearEnd(1), periods=10, freq='YS')
-    forecast.index = forecast_years  # Assign forecasted years to the index
+    forecast.index = forecast_years  
     
     # Print forecast results
     print(f"\nForecasted Values ({title}):")
@@ -1732,7 +1731,7 @@ train, test = incidence_series[:train_size], incidence_series[train_size:]
 
 # Fit ARIMA(0,2,0) model on the training data
 print("Fitting ARIMA(0,2,0) on training data...\n")
-model = ARIMA(train['val'], order=(0, 2, 0))  # Set ARIMA order explicitly
+model = ARIMA(train['val'], order=(0, 2, 0))  
 model_fit = model.fit()
 
 # Forecast for the test set
