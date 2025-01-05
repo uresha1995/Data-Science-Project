@@ -32,9 +32,18 @@ Forecast future trends in cancer incidence and mortality using time series analy
 *Libraries Used
 
 Pandas: For data manipulation and analysis.
+NumPy: Numerical computations.
 Matplotlib and Seaborn: For data visualization.
+Seaborn: Statistical visualizations
 Scipy: For statistical tests and calculations.
 Statsmodels: For regression analysis and hypothesis testing.
+Tukey HSD: Post-hoc group comparison.
+ARIMA: Time series forecasting.
+MSE (Sklearn): Model evaluation metric.
+ADF Test: Check time series stationarity.
+Ruptures: Change point detection.
+PMDARIMA: Automated ARIMA modeling.
+Ljung-Box: Residual autocorrelation test.
 
 ### Coding ##
 
