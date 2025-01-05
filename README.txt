@@ -103,17 +103,13 @@ Yearly Trends for Each Cancer Cause
 Cancer Cases by Age Group Over Time
 Incidence and mortality by Income Level
 
-*Correlation Analysis
-
-Correlation matrix to visualize the relationship between cancer incidence and mortality across years
-
 *Cross-Tabulations:
 
 Age group by gender
 Age group by cancer cause
 Age group by measure name (incidence or mortality)
 Age group by country
-Gender by cancer causes
+Gender by cancer cause
 Gender by country
 Country by cancer cause
 Gender and location (country)
@@ -130,3 +126,27 @@ Contingency tables for demographic relationships in cancer incidence and mortali
 
 **Post-Hoc Analysis: A Tukey’s HSD (Honest Significant Difference) test for pairwise comparisons following the ANOVA to further explore which specific income levels or age groups differ.
 
+*Time Series Analysis for deaths 
+
+ARIMA(1,1,1) - forecast the cancer incidence and mortality
+Auto ARIMA - Identify (0,2,0) as best model still AIC is high
+Did manual tuning to check whether other models have low AIC
+
+Found best model is (0,2,0)
+
+*Time Series Analysis for incidence
+
+ARIMA(1,1,1) - forecast the cancer incidence and mortality
+Auto ARIMA - Identify (0,1,0) as best model still AIC is high
+Did manual tuning to check whether other models have low AIC
+
+Found (0,2,0) is the best model
+
+*Run test and training model by separate 80% training and 20% testing
+
+Used to validate the model's performance by comparing predicted values to observed values
+
+*Rolling Forecast
+
+Run to validate the model's prediction ability
+ 
